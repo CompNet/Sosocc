@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<!-- Created by igraph -->
+  <key id="v_x" for="node" attr.name="x" attr.type="double"/>
+  <key id="v_y" for="node" attr.name="y" attr.type="double"/>
+  <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
+  <graph id="G" edgedefault="undirected">
+    <node id="n0">
+      <data key="v_x">3.06627184839476</data>
+      <data key="v_y">4.97178014245097</data>
+    </node>
+    <node id="n1">
+      <data key="v_x">4.72664188372508</data>
+      <data key="v_y">5.8597594699768</data>
+    </node>
+    <node id="n2">
+      <data key="v_x">3.97200380419384</data>
+      <data key="v_y">4.74985124850001</data>
+    </node>
+    <node id="n3">
+      <data key="v_x">3.44920995876799</data>
+      <data key="v_y">6.24815406783092</data>
+    </node>
+    <node id="n4">
+      <data key="v_x">3.76240241089596</data>
+      <data key="v_y">5.63678806876726</data>
+    </node>
+    <node id="n5">
+      <data key="v_x">7.72586561737986</data>
+      <data key="v_y">5.71348181548145</data>
+    </node>
+    <node id="n6">
+      <data key="v_x">7.15981355953866</data>
+      <data key="v_y">5.27052054922658</data>
+    </node>
+    <node id="n7">
+      <data key="v_x">7.2002352222947</data>
+      <data key="v_y">6.32779404741013</data>
+    </node>
+    <node id="n8">
+      <data key="v_x">6.3571406465264</data>
+      <data key="v_y">5.95888461111775</data>
+    </node>
+    <node id="n9">
+      <data key="v_x">6.48722822194063</data>
+      <data key="v_y">7.02110305962277</data>
+    </node>
+    <node id="n10">
+      <data key="v_x">7.63743877699068</data>
+      <data key="v_y">1.95796226166053</data>
+    </node>
+    <node id="n11">
+      <data key="v_x">6.93399203437363</data>
+      <data key="v_y">2.27951032015375</data>
+    </node>
+    <node id="n12">
+      <data key="v_x">6.58379383756566</data>
+      <data key="v_y">1.39486895977514</data>
+    </node>
+    <node id="n13">
+      <data key="v_x">7.90599925329817</data>
+      <data key="v_y">2.60437596212311</data>
+    </node>
+    <node id="n14">
+      <data key="v_x">7.38452072111096</data>
+      <data key="v_y">1.4563158111614</data>
+    </node>
+    <node id="n15">
+      <data key="v_x">2.60569764035173</data>
+      <data key="v_y">2.61958323458511</data>
+    </node>
+    <node id="n16">
+      <data key="v_x">3.34273892047636</data>
+      <data key="v_y">2.34479379665037</data>
+    </node>
+    <node id="n17">
+      <data key="v_x">4.46880423760606</data>
+      <data key="v_y">2.85960109510538</data>
+    </node>
+    <node id="n18">
+      <data key="v_x">3.41139130437904</data>
+      <data key="v_y">3.56835834984914</data>
+    </node>
+    <node id="n19">
+      <data key="v_x">2.93110318523662</data>
+      <data key="v_y">1.56392170244438</data>
+    </node>
+    <edge source="n0" target="n2">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n3">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n4">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n2">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n3">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n4">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n5">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n1" target="n8">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n2" target="n4">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n2" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n3" target="n4">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n3" target="n5">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n4" target="n7">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n5" target="n6">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n7">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n8">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n9">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n5" target="n11">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n6" target="n7">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n6" target="n8">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n7" target="n8">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n7" target="n9">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n8" target="n9">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n11">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n12">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n13">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n16">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n11" target="n12">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n11" target="n13">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n11" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n12" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n13" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n13" target="n15">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n15" target="n16">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n15" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n15" target="n19">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n16" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n16" target="n19">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n17" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+  </graph>
+</graphml>

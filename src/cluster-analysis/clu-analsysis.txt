@@ -1,0 +1,138 @@
+#n=12
+#dist.mtrx = as.matrix(read.csv(file="dist-matrix-Edit.csv")[,-1])
+#dist.mtrx = dist.mtrx/n
+
+dist.mtrx = as.matrix(read.csv(file="dist-matrix-NVI by n.csv")[,-1])
+sim.mtrx = 1- dist.mtrx
+#sim.mtrx = sim.mtrx * 100
+
+
+#g = graph_from_adjacency_matrix(sim.mtrx,mode="upper", weighted=TRUE, diag=FALSE)
+#res = cluster_louvain(g)
+#print(res$membership)
+#plot(g, edge.label=E(g)$weight, vertex.color=res$membership)
+
+
+part1 = c(1,1,1,1)
+
+
+part2 = c(2,1,1,1)
+sil = silhouette(part2, dist.mtrx)
+mean(sil[,"sil_width"])
+
+part3 = c(1,2,1,1)
+sil = silhouette(part3, dist.mtrx)
+mean(sil[,"sil_width"])
+
+part4 = c(1,1,2,1)
+sil = silhouette(part4, dist.mtrx)
+mean(sil[,"sil_width"])
+
+part5 = c(1,1,1,2)
+sil = silhouette(part5, dist.mtrx)
+mean(sil[,"sil_width"])
+
+part6 = c(1,2,2,1)
+sil = silhouette(part6, dist.mtrx)
+mean(sil[,"sil_width"])
+
+
+
+
+
+
+
+> part2 = c(2,1,1,1)
+> sil = silhouette(part2, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.1454545
+> 
+> part3 = c(1,2,1,1)
+> sil = silhouette(part3, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] -0.3307359
+> 
+> part4 = c(1,1,2,1)
+> sil = silhouette(part4, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.1454545
+> 
+> part5 = c(1,1,1,2)
+> sil = silhouette(part5, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] -0.3307359
+> 
+> part6 = c(1,2,2,1)
+> sil = silhouette(part6, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.8614719
+> sil = silhouette(part2, dist.mtrx)
+> dist.mtrx
+     sol.0 sol.1 sol.2 sol.3
+[1,]     0    10    11     1
+[2,]    10     0     1     1
+[3,]    11     1     0    10
+[4,]     1     1    10     0
+
+
+
+
+
+
+> dist.mtrx
+     sol.0 sol.1 sol.2 sol.3
+[1,]     0     4     5     1
+[2,]     4     0     1     1
+[3,]     5     1     0     4
+[4,]     1     1     4     0
+> 
+> 
+> part2 = c(2,1,1,1)
+> sil = silhouette(part2, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.1625
+> 
+> part3 = c(1,2,1,1)
+> sil = silhouette(part3, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] -0.2819444
+> 
+> part4 = c(1,1,2,1)
+> sil = silhouette(part4, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.1625
+> 
+> part5 = c(1,1,1,2)
+> sil = silhouette(part5, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] -0.2819444
+> 
+> part6 = c(1,2,2,1)
+> sil = silhouette(part6, dist.mtrx)
+> mean(sil[,"sil_width"])
+[1] 0.6888889
+
+
+
+
+
+
+
+
+
+###
+
+
+dist.mtrx = matrix(
+                c( 0,3,3,1,
+                   3,0,1,3,
+                   3,1,0,2,
+                   1,3,2,0  ), 4, 4)
+
+part6 = c(1,2,2,1)
+sil = silhouette(part6, dist.mtrx)
+mean(sil[,"sil_width"])
+
+
+g = graph_from_adjacency_matrix(dist.mtrx,mode="upper", weighted=TRUE, diag=FALSE)
+plot(g, layout=layout.fruchterman.reingold(g), edge.label=E(g)$weight)

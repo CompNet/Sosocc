@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<!-- Created by igraph -->
+  <key id="v_x" for="node" attr.name="x" attr.type="double"/>
+  <key id="v_y" for="node" attr.name="y" attr.type="double"/>
+  <key id="v_id" for="node" attr.name="id" attr.type="string"/>
+  <key id="v_x_kunegis" for="node" attr.name="x_kunegis" attr.type="double"/>
+  <key id="v_y_kunegis" for="node" attr.name="y_kunegis" attr.type="double"/>
+  <key id="v_x_bn_zheng" for="node" attr.name="x_bn_zheng" attr.type="double"/>
+  <key id="v_y_bn_zheng" for="node" attr.name="y_bn_zheng" attr.type="double"/>
+  <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
+  <graph id="G" edgedefault="undirected">
+    <node id="n0">
+      <data key="v_x">4.41140979475645</data>
+      <data key="v_y">9.44200380827465</data>
+      <data key="v_id">n0</data>
+      <data key="v_x_kunegis">0</data>
+      <data key="v_y_kunegis">0.616894028149709</data>
+      <data key="v_x_bn_zheng">0</data>
+      <data key="v_y_bn_zheng">0</data>
+    </node>
+    <node id="n1">
+      <data key="v_x">3.98017579525778</data>
+      <data key="v_y">8.72269629176845</data>
+      <data key="v_id">n1</data>
+      <data key="v_x_kunegis">0</data>
+      <data key="v_y_kunegis">0.449539039619193</data>
+      <data key="v_x_bn_zheng">0</data>
+      <data key="v_y_bn_zheng">0</data>
+    </node>
+    <node id="n2">
+      <data key="v_x">5.03944102471388</data>
+      <data key="v_y">8.85501793756361</data>
+      <data key="v_id">n2</data>
+      <data key="v_x_kunegis">0</data>
+      <data key="v_y_kunegis">0.449539039619193</data>
+      <data key="v_x_bn_zheng">0</data>
+      <data key="v_y_bn_zheng">0</data>
+    </node>
+    <node id="n3">
+      <data key="v_x">4.55891454494831</data>
+      <data key="v_y">8.23169026522469</data>
+      <data key="v_id">n3</data>
+      <data key="v_x_kunegis">0</data>
+      <data key="v_y_kunegis">0.449539039619193</data>
+      <data key="v_x_bn_zheng">0</data>
+      <data key="v_y_bn_zheng">0</data>
+    </node>
+    <node id="n4">
+      <data key="v_x">4.12869446952355</data>
+      <data key="v_y">10.4972540923698</data>
+      <data key="v_id">n4</data>
+      <data key="v_x_kunegis">0</data>
+      <data key="v_y_kunegis">0.114829062558163</data>
+      <data key="v_x_bn_zheng">0</data>
+      <data key="v_y_bn_zheng">0</data>
+    </node>
+    <node id="n5">
+      <data key="v_x">9.7974103212296</data>
+      <data key="v_y">9.06328048591287</data>
+      <data key="v_id">n5</data>
+      <data key="v_x_kunegis">-0.0431275363717736</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">-0.0110735582285019</data>
+      <data key="v_y_bn_zheng">-0.420234551624275</data>
+    </node>
+    <node id="n6">
+      <data key="v_x">9.78348777729876</data>
+      <data key="v_y">9.90236692156817</data>
+      <data key="v_id">n6</data>
+      <data key="v_x_kunegis">-0.199290299520707</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">-0.0281379452134791</data>
+      <data key="v_y_bn_zheng">-0.377913813918266</data>
+    </node>
+    <node id="n7">
+      <data key="v_x">9.99838659456839</data>
+      <data key="v_y">11.3937467437465</data>
+      <data key="v_id">n7</data>
+      <data key="v_x_kunegis">5.55111512312578e-17</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">1.2490009027033e-16</data>
+      <data key="v_y_bn_zheng">5.55111512312578e-17</data>
+    </node>
+    <node id="n8">
+      <data key="v_x">8.99393361081637</data>
+      <data key="v_y">12.5243264787451</data>
+      <data key="v_id">n8</data>
+      <data key="v_x_kunegis">-0.101228689440665</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">-0.953742450081024</data>
+      <data key="v_y_bn_zheng">0.0778079129274409</data>
+    </node>
+    <node id="n9">
+      <data key="v_x">8.97542490107703</data>
+      <data key="v_y">9.54493526948682</data>
+      <data key="v_id">n9</data>
+      <data key="v_x_kunegis">-0.0436118092972214</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">-0.00937794184582344</data>
+      <data key="v_y_bn_zheng">-0.244901783270118</data>
+    </node>
+    <node id="n10">
+      <data key="v_x">6.88419537749387</data>
+      <data key="v_y">12.7443447201454</data>
+      <data key="v_id">n10</data>
+      <data key="v_x_kunegis">-0.100666336456655</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.0253112649122234</data>
+      <data key="v_y_bn_zheng">-0.0527575995427711</data>
+    </node>
+    <node id="n11">
+      <data key="v_x">7.47326517608602</data>
+      <data key="v_y">11.9445770226247</data>
+      <data key="v_id">n11</data>
+      <data key="v_x_kunegis">-0.259049398372258</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.218980081035353</data>
+      <data key="v_y_bn_zheng">-0.290094510510293</data>
+    </node>
+    <node id="n12">
+      <data key="v_x">4.99409848097407</data>
+      <data key="v_y">12.2761356180764</data>
+      <data key="v_id">n12</data>
+      <data key="v_x_kunegis">-0.0463036580524123</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.00339998027422355</data>
+      <data key="v_y_bn_zheng">0.312410428266033</data>
+    </node>
+    <node id="n13">
+      <data key="v_x">6.69027730532667</data>
+      <data key="v_y">11.365460358064</data>
+      <data key="v_id">n13</data>
+      <data key="v_x_kunegis">-0.100666336456655</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.0514972343992361</data>
+      <data key="v_y_bn_zheng">-0.097263524761668</data>
+    </node>
+    <node id="n14">
+      <data key="v_x">5.99802187767619</data>
+      <data key="v_y">12.1905290740659</data>
+      <data key="v_id">n14</data>
+      <data key="v_x_kunegis">-0.30050811195102</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">-0.00731471404044675</data>
+      <data key="v_y_bn_zheng">-0.0537853198669867</data>
+    </node>
+    <node id="n15">
+      <data key="v_x">6.61089145699944</data>
+      <data key="v_y">6.5488358619768</data>
+      <data key="v_id">n15</data>
+      <data key="v_x_kunegis">0.189425920230882</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.0209525156248333</data>
+      <data key="v_y_bn_zheng">0.096945431529857</data>
+    </node>
+    <node id="n16">
+      <data key="v_x">6.50631769728177</data>
+      <data key="v_y">7.40424427758437</data>
+      <data key="v_id">n16</data>
+      <data key="v_x_kunegis">0.821732768309898</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.19012248429442</data>
+      <data key="v_y_bn_zheng">0.608095932892991</data>
+    </node>
+    <node id="n17">
+      <data key="v_x">7.39241380647449</data>
+      <data key="v_y">7.14611012717743</data>
+      <data key="v_id">n17</data>
+      <data key="v_x_kunegis">0.231198132386254</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.0363502634979048</data>
+      <data key="v_y_bn_zheng">0.169877764243434</data>
+    </node>
+    <node id="n18">
+      <data key="v_x">8.40030414514397</data>
+      <data key="v_y">7.24880573352839</data>
+      <data key="v_id">n18</data>
+      <data key="v_x_kunegis">0.0427664477154802</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.0112728110037076</data>
+      <data key="v_y_bn_zheng">0.083613389751288</data>
+    </node>
+    <node id="n19">
+      <data key="v_x">9.33052432305238</data>
+      <data key="v_y">7.30288302377795</data>
+      <data key="v_id">n19</data>
+      <data key="v_x_kunegis">0.00652073025804761</data>
+      <data key="v_y_kunegis">0</data>
+      <data key="v_x_bn_zheng">0.00539207919880705</data>
+      <data key="v_y_bn_zheng">0.0513114331605018</data>
+    </node>
+    <edge source="n0" target="n1">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n2">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n3">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n0" target="n4">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n2">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n1" target="n3">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n2" target="n3">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n6">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n9">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n5" target="n12">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n6" target="n9">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n6" target="n16">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n8" target="n11">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n8" target="n16">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n10" target="n11">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n10" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n11" target="n13">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n11" target="n16">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n12" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n13" target="n14">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n14" target="n16">
+      <data key="e_weight">-1</data>
+    </edge>
+    <edge source="n15" target="n16">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n15" target="n17">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n16" target="n17">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n17" target="n18">
+      <data key="e_weight">1</data>
+    </edge>
+    <edge source="n18" target="n19">
+      <data key="e_weight">1</data>
+    </edge>
+  </graph>
+</graphml>

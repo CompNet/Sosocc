@@ -1,0 +1,14 @@
+# useful command: pstree -lps -N user
+
+
+pProcString=`pstree -lps -N user | grep R | grep sh | grep java`
+# this gives something line: "bash(23956)---R(18843)---sh(29442)---java(29443)-+-{java}(29444)"
+# retreive 29443
+
+delim='---'
+arrIN=(${pProcString//$delim/ })
+delim2='-+-'
+arrIN2=(${arrIN[3]//$delim2/ })
+jppid=`${arrIN2[0]} | sed 's/.$//' | sed 's/^java(//'`
+memUsage=`cat /proc/$jppid/smaps | awk '/Pss/ {mem += $2} END {print mem, "kB"}' | awk '{ byte =$1 /1024/1024; print byte " GB" }'`
+echo $memUsage
