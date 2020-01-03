@@ -251,7 +251,7 @@ collect.core.parts(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDO
 # ====================================
 # TODOs
 # ====================================
-#
+# - use systematically (especially for the comments) the term 'module' for clusters in the generated networks, in order to distinguish it from the term 'cluster' which is used for k-medoids clustering (we also use the term 'solution class')
 # - the code works for the signed graphs with integer weights ?
 # - for(graph.desc.name in c(SIGNED.UNWEIGHTED.FILE)){ # SIGNED.WEIGHTED.FILE
 #       * do not do in that way, put the potetial values into global list in main.R
