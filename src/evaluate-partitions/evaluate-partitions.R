@@ -328,7 +328,7 @@ evaluate.partitions = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.ra
 			tlog(8, "evaluating partitions => prop.mispl: ", prop.mispl)
 			
 		    if(is.na(prop.negs) && d == 1){
-		        prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+		        prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
 		    }		
 			
 			for(prop.neg in prop.negs){

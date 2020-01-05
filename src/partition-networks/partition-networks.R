@@ -291,7 +291,7 @@ process.partitioning.algorithm <- function(part.folder, in.folder, algo.name, gr
 # It partitions a given network based on the considered algorithm name and graph type (weighted or not, etc.).
 #
 # n: graph size
-# k: number of cluster
+# l0: number of cluster
 # d: density
 # prop.mispl: proportion of misplaced links
 # prop.neg: proportion of negative links
@@ -302,10 +302,10 @@ process.partitioning.algorithm <- function(part.folder, in.folder, algo.name, gr
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-partition.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files, 
+partition.network = function(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files, 
                              plot.format, plot.layout, force)
 {
-    net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no)
+    net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
     tlog(16, "start to partition networks with exact algorithms")
     tlog(16, "partitioning networks => algo.name: ", cor.clu.exact.algo)
         
@@ -314,7 +314,7 @@ partition.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.
         tlog(20, "partitioning networks => graph.desc.name: ", graph.desc.name)
 
         
-        part.folder = get.part.folder.path(n, k, d, prop.mispl,
+        part.folder = get.part.folder.path(n, l0, d, prop.mispl,
                             prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
 
         if (dir.exists(net.folder)) {
@@ -337,7 +337,7 @@ partition.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.
 #
 # graph.sizes: a vector of values regarding graph sizes to be considered
 # d: density (it is a single value)
-# k: number of clusters to be considered (it is a single value)
+# l0: number of clusters to be considered (it is a single value)
 # prop.mispls: a vector of values regarding proportion of misplaced links
 # prop.negs: a vector of values regarding proportion of negative links (for now, it is not operational)
 # in.rand.net.folders: a vector of values regarding input random graph folders. Sequantial integers (1, .., 10)
@@ -347,7 +347,7 @@ partition.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-partition.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand.net.folders, cor.clu.exact.algo, keep.algo.log.files,
+partition.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders, cor.clu.exact.algo, keep.algo.log.files,
                               plot.format, plot.layout, force)
 {
     tlog("starts partitioning networks")
@@ -358,7 +358,7 @@ partition.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand
             tlog(8, "partitioning networks => prop.mispl: ", prop.mispl)
             
             if(is.na(prop.negs) && d == 1){
-                prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+                prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
             }
             
             for (prop.neg in prop.negs) {
@@ -367,7 +367,7 @@ partition.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand
                 for (network.no in in.rand.net.folders) {
                     tlog(16, "partitioning networks => network.no: ", network.no)
                     
-                    partition.network(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files,
+                    partition.network(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files,
                                       plot.format, plot.layout, force)
                 }
                 

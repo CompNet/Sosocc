@@ -786,7 +786,7 @@ perform.all.cluster.analysis = function(graph.sizes, d, l0, prop.mispls, prop.ne
 			tlog(8, "performing cluster analysis => prop.mispl: ", prop.mispl)
 			
 		    if(is.na(prop.negs) && d == 1){
-		        prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+		        prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
 		    }	
 			
 			for(prop.neg in prop.negs){

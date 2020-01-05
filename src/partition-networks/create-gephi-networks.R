@@ -20,7 +20,7 @@
 #
 #
 # n: node number, i.e graph size
-# k: number of initial clusters
+# l0: number of initial clusters
 # d: density
 # prop.mispl: proportion of misplaced links
 # prop.neg: proportion of negative links
@@ -29,18 +29,18 @@
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-create.gephi.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, force)
+create.gephi.network = function(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, force)
 {
 	source("src/define-graphml-operations.R")
 	
-	net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no)
+	net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
 	
 	tlog(16, "creating gephi networks => algo.name: ", cor.clu.exact.algo)
 	
 	for(graph.desc.name in c(SIGNED.UNWEIGHTED.FILE)){
 		tlog(20, "creating gephi networks => graph.desc.name: ", graph.desc.name)
 		
-		part.folder = get.part.folder.path(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+		part.folder = get.part.folder.path(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
 		if(!dir.exists(part.folder))
 			dir.create(path=part.folder, showWarnings=FALSE, recursive=TRUE)
 		
@@ -81,7 +81,7 @@ create.gephi.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.c
 #
 # graph.sizes: a vector of values regarding graph sizes to be considered
 # d: density (it is a single value)
-# k: number of clusters to be considered (it is a single value)
+# l0: number of clusters to be considered (it is a single value)
 # prop.mispls: a vector of values regarding proportion of misplaced links
 # prop.negs: a vector of values regarding proportion of negative links (for now, it is not operational)
 # in.rand.net.folders: a vector of values regarding input random graph folders. Sequantial integers (1, .., 10)
@@ -90,7 +90,7 @@ create.gephi.network = function(n, k, d, prop.mispl, prop.neg, network.no, cor.c
 #
 #
 ##################################################################
-create.gephi.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand.net.folders, cor.clu.exact.algo, force)
+create.gephi.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders, cor.clu.exact.algo, force)
 {
 	tlog("starts creating gephi networks")
 	for(n in graph.sizes){
@@ -100,19 +100,19 @@ create.gephi.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.r
 			tlog(8, "creating gephi networks => prop.mispl: ", prop.mispl)
 			
 		    if(is.na(prop.negs) && d == 1){
-		        prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+		        prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
 		    }
 			
 			for(prop.neg in prop.negs){
 				tlog(12, "creating gephi networks => prop.neg: ", prop.neg)
 				
-				net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no=NA)
+				net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no=NA)
 				if(dir.exists(net.folder)){
 				
 					for(network.no in in.rand.net.folders){
 						tlog(16, "creating gephi networks => network.no: ", network.no)
 						
-						create.gephi.network(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, force)
+						create.gephi.network(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, force)
 					}
 				}
 				

@@ -284,7 +284,7 @@ show.difference.for.all.k.in.cluster.analysis = function(measure1, measure2, clu
 #   It iterates over exact algorithms used to obtain partitions, graph types and dissimilarity measures.
 #
 # n: graph size
-# k: number of cluster
+# l0: number of cluster
 # d: density
 # prop.mispl: proportion of misplaced links
 # prop.neg: proportion of negative links
@@ -296,7 +296,7 @@ show.difference.for.all.k.in.cluster.analysis = function(measure1, measure2, clu
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-show.cluster.analysis.difference = function(n, k, d, prop.mispl, prop.neg, network.no,
+show.cluster.analysis.difference = function(n, l0, d, prop.mispl, prop.neg, network.no,
 	 cor.clu.exact.algo, comp.measures, k.limits, force)
 {
 
@@ -307,16 +307,16 @@ show.cluster.analysis.difference = function(n, k, d, prop.mispl, prop.neg, netwo
 		for(graph.desc.name in c(SIGNED.UNWEIGHTED.FILE)){ # OPPOSITE.SIGNED.UNWEIGHTED.FILE
 			tlog(24, "cluster analysis difference => graph.desc.name: ", graph.desc.name)
 			
-			net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no)
+			net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
 			graph.name = paste0(SIGNED.UNWEIGHTED.FILE, ".G") # our reference graph to get optimal and worst imbalance count value
 			network.path = file.path(net.folder, graph.name)
 			g = read.graph.ils(network.path)
 	
-			part.folder = get.part.folder.path(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
-			eval.algo.folder = get.eval.folder.path(n, k, d, prop.mispl, detected.imb=NA, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
-			clu.analysis.folder = get.clu.analysis.folder.path(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
-			clu.characterization.folder = get.clu.characterization.folder.path(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
-			clu.analysis.difference.folder = get.clu.analysis.difference.folder.path(n, k, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+			part.folder = get.part.folder.path(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+			eval.algo.folder = get.eval.folder.path(n, l0, d, prop.mispl, detected.imb=NA, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+			clu.analysis.folder = get.clu.analysis.folder.path(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+			clu.characterization.folder = get.clu.characterization.folder.path(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+			clu.analysis.difference.folder = get.clu.analysis.difference.folder.path(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
 		
 			partitions = load.membership.files(part.folder)
 			m = length(partitions) # nb partition
@@ -371,7 +371,7 @@ show.cluster.analysis.difference = function(n, k, d, prop.mispl, prop.neg, netwo
 #
 # graph.sizes: a vector of values regarding graph sizes to be considered
 # d: density (it is a single value)
-# k: number of clusters to be considered (it is a single value)
+# l0: number of clusters to be considered (it is a single value)
 # prop.mispls: a vector of values regarding proportion of misplaced links
 # prop.negs: a vector of values regarding proportion of negative links (for now, it is not operational)
 # in.rand.net.folders: a vector of values regarding input random graph folders. Sequantial integers (1, .., 10)
@@ -382,7 +382,7 @@ show.cluster.analysis.difference = function(n, k, d, prop.mispl, prop.neg, netwo
 #
 #
 ##################################################################
-show.all.cluster.analysis.difference = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand.net.folders,
+show.all.cluster.analysis.difference = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders,
 	cor.clu.exact.algo, comp.measures, k.limits, force)
 {
 	tlog("starts performing cluster analysis")
@@ -393,7 +393,7 @@ show.all.cluster.analysis.difference = function(graph.sizes, d, k, prop.mispls, 
 			tlog(8, "performing cluster analysis => prop.mispl: ", prop.mispl)
 			
 		    if(is.na(prop.negs) && d == 1){
-		        prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+		        prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
 		    }
 			
 			for(prop.neg in prop.negs){
@@ -402,7 +402,7 @@ show.all.cluster.analysis.difference = function(graph.sizes, d, k, prop.mispls, 
 				for(network.no in in.rand.net.folders){
 					tlog(16, "performing cluster analysis => network.no: ", network.no)
 						
-					show.cluster.analysis.difference(n, k, d, prop.mispl, prop.neg, network.no,
+					show.cluster.analysis.difference(n, l0, d, prop.mispl, prop.neg, network.no,
 						 cor.clu.exact.algo, comp.measures, k.limits, force)
 	
 				}

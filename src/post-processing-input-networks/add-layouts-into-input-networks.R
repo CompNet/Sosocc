@@ -8,12 +8,12 @@ library(igraph)
 #################################################################
 #
 # d: density
-# k: nb cluster
+# l0: nb cluster
 #
 ##################################################################
-add.layouts = function(n, k, d, prop.mispl, prop.neg, network.no, unsigned.layout.methods, signed.layout.methods)
+add.layouts = function(n, l0, d, prop.mispl, prop.neg, network.no, unsigned.layout.methods, signed.layout.methods)
 {
-	net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no)
+	net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
 	
 	graph.name = paste0(SIGNED.UNWEIGHTED.FILE, ".graphml") # our reference graph to get optimal and worst imbalance count value
 	layout.graph.name = paste0(GRAPH.FILE.LAYOUT.PREFIX,"-",graph.name)
@@ -63,7 +63,7 @@ add.layouts = function(n, k, d, prop.mispl, prop.neg, network.no, unsigned.layou
 #
 # graph.sizes
 # d: density
-# k: nb cluster
+# l0: nb cluster
 # prop.mispls
 # prop.negs
 # cor.clu.heur.algos
@@ -74,7 +74,7 @@ add.layouts = function(n, k, d, prop.mispl, prop.neg, network.no, unsigned.layou
 # plot.formats
 #
 ##################################################################
-add.layouts.for.all.networks = function(graph.sizes, d, k, prop.mispls, prop.negs, in.rand.net.folders,
+add.layouts.for.all.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders,
 		 unsigned.layout.methods, signed.layout.methods)
 {
 	tlog("starts add layouts for all networks")
@@ -85,19 +85,19 @@ add.layouts.for.all.networks = function(graph.sizes, d, k, prop.mispls, prop.neg
 			tlog(8, "adding layouts for all networks => prop.mispl: ", prop.mispl)
 			
 			if(is.na(prop.negs) && d == 1){
-			    prop.negs = compute.prop.neg(n, d, k, prop.mispl)
+			    prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
 			}
 			
 			for(prop.neg in prop.negs){
 				tlog(12, "adding layouts for all networks => prop.neg: ", prop.neg)
 				
-				net.folder = get.input.network.folder.path(n, k, d, prop.mispl, prop.neg, network.no=NA)
+				net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no=NA)
 				if(dir.exists(net.folder)){
 	
 					for(network.no in in.rand.net.folders){
 						tlog(16, "adding layouts for all networks => network.no: ", network.no)
 						
-						add.layouts(n, k, d, prop.mispl, prop.neg, network.no, unsigned.layout.methods, signed.layout.methods)
+						add.layouts(n, l0, d, prop.mispl, prop.neg, network.no, unsigned.layout.methods, signed.layout.methods)
 						
 					}
 				
