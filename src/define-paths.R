@@ -317,7 +317,7 @@ get.plot.folder.path <- function(n, l0, d, prop.mispl=NA, detected.imb=NA, prop.
 #
 # returns:
 ###############################################################################
-get.transition.graph.plot.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, k=NA, network.no=NA, algo.name=NA, graph.desc.name=NA)
+get.transition.graph.plot.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, network.no=NA, algo.name=NA, graph.desc.name=NA)
 {		
 	# 'n' might be a string (like 'All') when we process all those values for plots
 	result <- file.path(TRANSITION.GRAPH.PLOT.FOLDER,paste0(paste0("n=",n),paste0("_l0=",l0),paste0("_dens=",sprintf("%.4f",d))))
@@ -334,10 +334,10 @@ get.transition.graph.plot.folder.path <- function(n, l0, d, prop.mispl=NA, prop.
 	else if(!is.na(prop.neg) && is.numeric(prop.neg))
 		result <- file.path(result, paste0("propNeg=",sprintf("%.4f",prop.neg)))
 	
-	if(!is.na(k))
-	    result <- file.path(result, paste0("k=", k))
-	else
-	    result <- file.path(result, paste0("k=", 1)) # default value => one solution class
+	# if(!is.na(k))
+	#     result <- file.path(result, paste0("k=", k))
+	# else
+	#     result <- file.path(result, paste0("k=", 1)) # default value => one solution class
 		
 	# 'network.no' might be a string (like 'Summary') when we process all those values for plots
 	if(!is.na(network.no) && is.character(network.no))

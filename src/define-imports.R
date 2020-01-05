@@ -13,6 +13,8 @@ source("src/define-random-generator.R")
 
 source("src/plot-tools/plot-network.R")
 source("src/plot-tools/define-alluvial-diagram.R")
+source("src/plot-tools/plot-network-for-transition-graph.R")
+source("src/plot-tools/plot-transition-graph.R")
 
 source("src/post-processing-input-networks/add-layouts-into-input-networks.R")
 
@@ -48,4 +50,11 @@ source("src/cluster-characterization/perform-cluster-characterization.R")
 source("src/collect-csv/collect-best-k-for-kmedoids.R")
 source("src/collect-csv/collect-nb-opt-sol.R")
 source("src/collect-csv/collect-core-parts.R")
+source("src/collect-csv/collect-nbComp-in-transition-graphs.R")
+
+# ------------------------------------------------------------------------------
+
+source("src/transition-graph/create-edit-dist-connected-comps.R")
+source("src/transition-graph/plot-transition-graphs.R")
+
 
