@@ -33,7 +33,7 @@ process.core.part.size.in.solution.classes = function(clu.analysis.measure.folde
         for(core.part.threshold in CORE.PART.THRESHOLDS){
             characterization.thresh.folder = file.path(characterization.silh.folder,
                                                        paste0("core-part=",sprintf("%.2f",core.part.threshold)))
-            
+            print(characterization.thresh.folder)
             vals = c()
             for(clu.no in 1:k){
                 fpath = file.path(characterization.thresh.folder,paste0(MBRSHP.FILE.PREFIX,"-",CLUSTER.ID.FOLDER.PREFIX,clu.no,".txt"))
@@ -45,7 +45,7 @@ process.core.part.size.in.solution.classes = function(clu.analysis.measure.folde
                 }
             }
             
-            #print(vals)
+            print(vals)
             norm.vals = vals/n
             class.core.part.size.prop.file = file.path(eval.algo.folder,
                                                        paste0(EVAL.CLASS.CORE.PART.SIZE.FILE.NAME,"-tresh=",sprintf("%.2f",core.part.threshold),".csv"))
