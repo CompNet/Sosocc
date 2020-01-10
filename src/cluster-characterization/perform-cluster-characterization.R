@@ -730,7 +730,7 @@ determine.representative.partitions = function(analysis.silh.folder, characteriz
     #		if(!dir.exists(analysis.clu.folder))
     #			dir.create(path=analysis.clu.folder, showWarnings=FALSE, recursive=TRUE)
 		
-	
+	print(clu.no)
 		    part.ids = which(clu.analysis.mbrshp == clu.no)
 		    m = length(part.ids) # nb current solution
 		    curr.dist.mtrx = as.matrix(dist.mtrx[part.ids, part.ids])
@@ -845,6 +845,7 @@ determine.all.representative.partitions = function(clu.characterization.measure.
 				dist.mtrx, net.folder, measure, force)
 {
 	table.file = file.path(eval.folder, paste0(EVAL.BEST.K.FOR.KMEDOIDS,"-",measure,".csv"))
+print(table.file)
 	if(file.exists(table.file)){
 		df = read.csv(table.file, check.names=FALSE,stringsAsFactors=FALSE)
 		k = as.numeric(df[,BEST.K.FOR.SILH.COL.NAME])
@@ -890,6 +891,7 @@ perform.cluster.characterization = function(n, l0, d, prop.mispl, prop.neg, netw
 			
 			net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
 			if(dir.exists(net.folder)){
+
 				graph.name = paste0(SIGNED.UNWEIGHTED.FILE, ".G") # our reference graph to get optimal and worst imbalance count value
 				network.path = file.path(net.folder, graph.name)
 				g = read.graph.ils(network.path)
@@ -902,7 +904,7 @@ perform.cluster.characterization = function(n, l0, d, prop.mispl, prop.neg, netw
 				
 				partitions = load.membership.files(part.folder)
 				m = length(partitions) # nb partition
-				
+
 				for(measure in comp.measures){
 					tlog(20, "performing cluster characterization => measure: ", measure)
 			
@@ -910,20 +912,19 @@ perform.cluster.characterization = function(n, l0, d, prop.mispl, prop.neg, netw
 					clu.characterization.measure.folder = file.path(clu.characterization.folder,measure)
 					if(!dir.exists(clu.characterization.measure.folder))
 						dir.create(path=clu.characterization.measure.folder, showWarnings=FALSE, recursive=TRUE)
-						
 					
 					# ---------------------------------------------------
 					matrix.file = file.path(eval.algo.folder,paste0(EVAL.DIST.MATRIX.FILE.PREFIX,"-",measure,".csv"))
 					dist.mtrx = as.matrix(read.csv(matrix.file, row.names = 1, header= TRUE, check.names=FALSE)) # square matrix
 					dist.mtrx = matrix(as.numeric(sprintf("%.4f", dist.mtrx)), m, m)
 					# ---------------------------------------------------			
-					
+
 					#unlink(clu.characterization.measure.folder, recursive=TRUE)
 					determine.all.representative.partitions(clu.characterization.measure.folder, eval.algo.folder, clu.analysis.measure.folder,
-						 dist.mtrx, net.folder, force)
+						 dist.mtrx, net.folder, measure, force)
 									
 					determine.all.core.parts(g, clu.characterization.measure.folder, eval.algo.folder, clu.analysis.measure.folder,
-						dist.mtrx, part.folder, force)
+						dist.mtrx, part.folder, measure, force)
 				}
 			}
 		
