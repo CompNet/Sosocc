@@ -19,6 +19,7 @@ source("src/post-processing-input-networks/add-layouts-into-input-networks.R")
 source("src/partition-networks/partition-networks.R")
 source("src/partition-networks/load-membership.R")
 source("src/partition-networks/create-gephi-networks.R")
+source("src/partition-networks/post-processing-heuristic-solutions.R")
 
 source("src/evaluate-partitions/common.R")
 source("src/evaluate-partitions/evaluate-partitions.R")

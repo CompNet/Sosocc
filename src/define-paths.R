@@ -176,10 +176,11 @@ get.input.network.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, 
 # network.no
 # algo.name
 # graph.desc.name
+# rep.no: repetition no
 #
 # returns: the folder path defined to store the network and the associated result files.
 ###############################################################################
-get.part.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, network.no=NA, algo.name=NA, graph.desc.name=NA)
+get.part.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, network.no=NA, algo.name=NA, graph.desc.name=NA, rep.no=NA)
 {	
 	result <- file.path(PARTITIONS.FOLDER,paste0(paste0("n=",n),paste0("_l0=",l0),paste0("_dens=",sprintf("%.4f",d))))
 	if(!is.na(prop.mispl))
@@ -193,6 +194,8 @@ get.part.folder.path <- function(n, l0, d, prop.mispl=NA, prop.neg=NA, network.n
 		result <- file.path(result, algo.name)
 	if(!is.na(graph.desc.name))
 		result <- file.path(result, graph.desc.name)
+	if(!is.na(rep.no))
+	    result <- file.path(result, rep.no)
 	
 	return(result)
 }

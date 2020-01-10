@@ -35,10 +35,23 @@ plot.format <- c( # ==========> it is not taken into account everywhere !! TODO
 
 FORCE = FALSE
 
-keep.algo.log.files = FALSE
+keep.algo.log.files = TRUE
 
-# COR.CLU.EXACT.ALGO = get.ExCC.code(enum.all=FALSE)  # only for 1 optimal solution ==> it should be used only for debug or to know the optimal cost
-COR.CLU.EXACT.ALGO = get.ExCC.code(enum.all=TRUE)   # for all optimal solutions
+# warning: Grasp is not configured for RCC porblem
+COR.CLU.HEURISTIC.ALGOS = c(
+#    get.ils.code(l=1, alpha=0.4, gain=0, perturbation=3, time.limit=3600, iter.nbr=10, rcc=FALSE),
+#    get.ils.code(l=1, alpha=0.4, gain=0, perturbation=3, time.limit=3600, iter.nbr=10, rcc=FALSE, vns=TRUE), # VNS metaheursitic
+#    get.grasp.code(rcc=FALSE, l=1, k=NA, alpha=0.8, gain=0, time.limit=3600, iter.nbr=400, oneOptNeig=1),
+#    get.grasp.code(rcc=FALSE, l=1, k=NA, alpha=0.8, gain=0, time.limit=3600, iter.nbr=-1, oneOptNeig=0) # VOTE-BOEM
+)
+HEURISTIC.REPETITIONS = seq(1, 10, by=1)
+
+COR.CLU.EXACT.ALGOS = c(
+    get.ExCC.code(enum.all=FALSE)
+    #get.ExCC.code(enum.all=TRUE)
+)
+EXACT.REPETITIONS = seq(1, 10, by=1)
+
 
 
 # not all the measures are distance measure, 
@@ -60,17 +73,21 @@ COMP.MEASURES <- c(
 K.LIMITS = c(NA,NA) # LIMIT K-MEDOIDS RESULTS
 
 
-GRAPH.SIZES = c(20,24)
-L0 = 4
-PROP.MISPLS = c( seq(0.05, 0.20, by=0.05))
-DENSITY = 0.125 # graph density: we can only give a single value (not a vector !!)
-INPUT.RANDOM.NETWORKS = seq(1, 2, by=1)
+GRAPH.SIZES = c(100) # c(20,24)
+L0 = 2
+PROP.MISPLS = c( seq(0.10, 0.45, by=0.05))
+DENSITY = 1 # 0.125 # graph density: we can only give a single value (not a vector !!)
+INPUT.RANDOM.NETWORKS = seq(1, 5, by=1)
 # ----------------------------------------------
-PROP.NEGS = c(0.2, 0.3)
+PROP.NEGS = NA # c(0.2, 0.3)
 # Note that PROP.NEGS should be 'NA' when DENSITY=1.0
 # In the point of view of a developer, if PROP.NEGS = NA, we should know that prop.neg can be only 1 value and it can be computed from (graph.size, prop.mispl)
 # Otherwise, user should be able to give a common range of prop.negs for each pair of (graph.size, prop.mispl)
 # ----------------------------------------------
+
+INPUT.RANDOM.NETWORKS = seq(1, 10, by=1)
+
+
 
 DETECTED.IMB.INTERVALS = c()
 DETECTED.IMB.INTERVAL.SEQ.VALS = seq(0.00, 1.00, 0.05) # tis vector does not matter. In any case, we check if the folder exists or not
@@ -106,141 +123,142 @@ for(i in 1:(length(DETECTED.IMB.INTERVAL.SEQ.VALS)-1)){
 # FUNCTIONS
 # =============================================================================
 
-#################################################################
-# POST-PROCESSING INPUT NETWORKS ==> since layout algos are stochastic,
-#       the obtained layout is used whenever plot is used
-#################################################################
-add.layouts.for.all.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-                    UNSIGNED.GRAPH.LAYOUTS, SIGNED.GRAPH.LAYOUTS)
+# #################################################################
+# # POST-PROCESSING INPUT NETWORKS ==> since layout algos are stochastic,
+# #       the obtained layout is used whenever plot is used
+# #################################################################
+# add.layouts.for.all.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#                     UNSIGNED.GRAPH.LAYOUTS, SIGNED.GRAPH.LAYOUTS)
 
 
 ##################################################################
 # PARTITION NETWORKS
 ##################################################################
 partition.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-	                COR.CLU.EXACT.ALGO, keep.algo.log.files, plot.format, plot.layout, FORCE)
+                   COR.CLU.HEURISTIC.ALGOS, HEURISTIC.REPETITIONS, COR.CLU.EXACT.ALGOS, EXACT.REPETITIONS,
+                   keep.algo.log.files, plot.format, plot.layout, FORCE)
 
 
-#################################################################
-# CREATE GEPHI NETWORKS with partition info for all solutions
-#   ==> it is a bit slower (depending on the number of obtained partitions)
-#################################################################
-create.gephi.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS, COR.CLU.EXACT.ALGO, FORCE)
-
-
-
-#################################################################
-# EVALUATE PARTITIONS
-#################################################################
-evaluate.partitions(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-                    COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
-
-
-#################################################################
-# CLUSTER ANALYSIS
-#################################################################
-K.LIMITS = c(1,20)
-perform.all.cluster.analysis(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-        COR.CLU.EXACT.ALGO, COMP.MEASURES, K.LIMITS, FORCE)
-
-
-# # ################################################################
-# # # EVALUATE PARTITIONS WITH KMEDOID
-# # ################################################################
-evaluate.partitions.with.kmedoid.results(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-        COR.CLU.EXACT.ALGO,
-        #VI,
-        COMP.MEASURES,
-        FORCE)
-
-
-# ##############################################################
-# # CLUSTER CHARACTERIZATION
-# ##############################################################
-perform.all.cluster.characterization(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-            COR.CLU.EXACT.ALGO, COMP.MEASURES, K.LIMITS, FORCE)
-
-
-#################################################################
-# OLD ? - CLUSTER ANALYSIS DIFFERENCES - MEASURES ===> needs multiple comp measures ...
-#################################################################
-## COMP.MEASURES <- c(
-##     NMI,
-##     VI
-## )
-# show.all.cluster.analysis.difference(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# #################################################################
+# # CREATE GEPHI NETWORKS with partition info for all solutions
+# #   ==> it is a bit slower (depending on the number of obtained partitions)
+# #################################################################
+# create.gephi.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS, COR.CLU.EXACT.ALGO, FORCE)
+# 
+# 
+#  
+# #################################################################
+# # EVALUATE PARTITIONS
+# #################################################################
+# evaluate.partitions(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#                     COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
+# 
+# 
+# #################################################################
+# # CLUSTER ANALYSIS
+# #################################################################
+# K.LIMITS = c(1,20)
+# perform.all.cluster.analysis(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
 #         COR.CLU.EXACT.ALGO, COMP.MEASURES, K.LIMITS, FORCE)
-
-
+# 
+# 
+# # # ################################################################
+# # # # EVALUATE PARTITIONS WITH KMEDOID
+# # # ################################################################
+# evaluate.partitions.with.kmedoid.results(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#         COR.CLU.EXACT.ALGO,
+#         #VI,
+#         COMP.MEASURES,
+#         FORCE)
+# 
+# 
+# # ##############################################################
+# # # CLUSTER CHARACTERIZATION
+# # ##############################################################
+# perform.all.cluster.characterization(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#             COR.CLU.EXACT.ALGO, COMP.MEASURES, K.LIMITS, FORCE)
+# 
+# 
+# #################################################################
+# # OLD ? - CLUSTER ANALYSIS DIFFERENCES - MEASURES ===> needs multiple comp measures ...
+# #################################################################
+# ## COMP.MEASURES <- c(
+# ##     NMI,
+# ##     VI
+# ## )
+# # show.all.cluster.analysis.difference(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# #         COR.CLU.EXACT.ALGO, COMP.MEASURES, K.LIMITS, FORCE)
+# 
+# 
+# # ##################################################################
+# # ## EVALUATE PARTITIONS WITH CORE PART ANALYSIS AND REPRESENTATIVES
+# # ##################################################################
+# evaluate.partitions.with.cluster.characterization(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#                 COR.CLU.EXACT.ALGO,
+#                 #VI,
+#                 COMP.MEASURES,
+#                 FORCE)
+# 
+# 
+# 
 # ##################################################################
-# ## EVALUATE PARTITIONS WITH CORE PART ANALYSIS AND REPRESENTATIVES
+# ## REORGANIZE
 # ##################################################################
-evaluate.partitions.with.cluster.characterization(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-                COR.CLU.EXACT.ALGO,
-                #VI,
-                COMP.MEASURES,
-                FORCE)
-
-
-
-##################################################################
-## REORGANIZE
-##################################################################
-reorganize.all.csv.results.by.detected.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-                                              COR.CLU.EXACT.ALGO, FORCE)
-
-# # for proportion of misplaced AND detected imbalance intervals
-reorganize.all.csv.results.by.sol.class(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-                                             COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
-
-
-
-###################################################################
-### COMBINE EVALUATED PARTITIONS
-###################################################################
-## for proportion of misplaced  AND  detected imbalance intervals
-take.average.over.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-        COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
-
-
-
-
-#-----------------------------------------------------------------------------------------------------------
-##################################################################
-## LAYOUT PLOTS
-##################################################################
-make.layout.plots.by.graph.size.and.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-make.layout.plots.by.graph.size.and.network.no(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-make.layout.plots.by.imbalance.and.network.no(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-
-###################################################################
-### SUMMARY FOLDER - LAYOUT PLOTS
-###################################################################
-make.layout.plots.by.graph.size.and.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, c(SUMMARY.FOLDER.NAME),
-	 COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-
-
-
-
-#################################################################
-# WRITE SOME RESULTS INTO CSV FILES
-#################################################################
-
-collect.all.best.k.for.kmedoids(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-		COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-collect.all.nb.opt.solution(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-		COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
-
-collect.core.parts(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
-	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# reorganize.all.csv.results.by.detected.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#                                               COR.CLU.EXACT.ALGO, FORCE)
+# 
+# # # for proportion of misplaced AND detected imbalance intervals
+# reorganize.all.csv.results.by.sol.class(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#                                              COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
+# 
+# 
+# 
+# ###################################################################
+# ### COMBINE EVALUATED PARTITIONS
+# ###################################################################
+# ## for proportion of misplaced  AND  detected imbalance intervals
+# take.average.over.networks(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+#         COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE)
+# 
+# 
+# 
+# 
+# #-----------------------------------------------------------------------------------------------------------
+# ##################################################################
+# ## LAYOUT PLOTS
+# ##################################################################
+# make.layout.plots.by.graph.size.and.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# make.layout.plots.by.graph.size.and.network.no(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# make.layout.plots.by.imbalance.and.network.no(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# 
+# ###################################################################
+# ### SUMMARY FOLDER - LAYOUT PLOTS
+# ###################################################################
+# make.layout.plots.by.graph.size.and.imbalance(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, DETECTED.IMB.INTERVALS, PROP.NEGS, c(SUMMARY.FOLDER.NAME),
+# 	 COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# 
+# 
+# 
+# 
+# #################################################################
+# # WRITE SOME RESULTS INTO CSV FILES
+# #################################################################
+# 
+# collect.all.best.k.for.kmedoids(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 		COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# collect.all.nb.opt.solution(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 		COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
+# 
+# collect.core.parts(GRAPH.SIZES, DENSITY, L0, PROP.MISPLS, PROP.NEGS, INPUT.RANDOM.NETWORKS,
+# 	COR.CLU.EXACT.ALGO, COMP.MEASURES, FORCE, plot.format)
 
 
 

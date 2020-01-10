@@ -296,35 +296,69 @@ process.partitioning.algorithm <- function(part.folder, in.folder, algo.name, gr
 # prop.mispl: proportion of misplaced links
 # prop.neg: proportion of negative links
 # network.no: network id (the identifiers start from 1)
-# cor.clu.exact.algo: the name of correlation clustering algorithm to run
-# plot.format: plot format(s), such as PDF, PNG or NA (it means 'no plotting')
+# cor.clu.heur.algos: the names of correlation clustering heuristic algorithms to run
+# heur.reps: a sequence of values containing repetition numbers, i.e. 1, 2, 3, 4, etc.
+# cor.clu.exact.algos: the names of exact correlation clustering algorithms to run
+# exact.reps: a sequence of values containing repetition numbers, i.e. 1, 2, 3, 4, etc.
+# keep.algo.log.files: 
 # plot.layout: plot layout, such as "kamada.kawai", "fruchterman.reingold", "bn_zheng" or "circle"
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-partition.network = function(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files, 
-                             plot.format, plot.layout, force)
+partition.network = function(n, l0, d, prop.mispl, prop.neg, network.no,
+                             cor.clu.heur.algos, heur.reps, cor.clu.exact.algos, exact.reps, 
+                             keep.algo.log.files, plot.format, plot.layout, force)
 {
     net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no)
     tlog(16, "start to partition networks with exact algorithms")
-    tlog(16, "partitioning networks => algo.name: ", cor.clu.exact.algo)
-        
+
     for (graph.desc.name in c(SIGNED.UNWEIGHTED.FILE)) {
-        # OPPOSITE.SIGNED.UNWEIGHTED.FILE
         tlog(20, "partitioning networks => graph.desc.name: ", graph.desc.name)
 
-        
-        part.folder = get.part.folder.path(n, l0, d, prop.mispl,
-                            prop.neg, network.no, cor.clu.exact.algo, graph.desc.name)
+        tlog(20, "start to partition networks with exact algorithms")	
+        for(algo.name in cor.clu.exact.algos){
+            tlog(24, "start to partition networks with the exact algorithm: ", algo.name)
+            
+            for(rep.no in exact.reps){	
+                part.folder = get.part.folder.path(n, l0, d, prop.mispl,
+                                prop.neg, network.no, algo.name, graph.desc.name, rep.no)
 
-        if (dir.exists(net.folder)) {
-            if (!dir.exists(part.folder))
-                dir.create(path = part.folder, showWarnings = FALSE, recursive = TRUE)
-            tlog(20, "partitioning networks in ", part.folder)
-            graph.name = paste0(graph.desc.name, ".G")
-            process.partitioning.algorithm(part.folder, net.folder, cor.clu.exact.algo, graph.name, keep.algo.log.files,
-                                           plot.format, plot.layout, force)
+                if (dir.exists(net.folder)) {
+                    if (!dir.exists(part.folder))
+                        dir.create(path = part.folder, showWarnings = FALSE, recursive = TRUE)
+                    tlog(28, "partitioning networks in ", part.folder)
+                    graph.name = paste0(graph.desc.name, ".G")
+                    process.partitioning.algorithm(part.folder, net.folder, algo.name, graph.name, keep.algo.log.files,
+                                                   plot.format, plot.layout, force)
+                }
+            
+            }
+            
         }
+        
+        
+        tlog(20, "start to partition networks with heuristic algorithms")	
+        for(algo.name in cor.clu.heur.algos){
+            tlog(24, "start to partition networks with the heuristic algorithm: ", algo.name)
+            
+            for(rep.no in heur.reps){	
+                part.folder = get.part.folder.path(n, l0, d, prop.mispl,
+                                                   prop.neg, network.no, algo.name, graph.desc.name, rep.no)
+                
+                if (dir.exists(net.folder)) {
+                    if (!dir.exists(part.folder))
+                        dir.create(path = part.folder, showWarnings = FALSE, recursive = TRUE)
+                    tlog(28, "partitioning networks in ", part.folder)
+                    graph.name = paste0(graph.desc.name, ".G")
+                    process.partitioning.algorithm(part.folder, net.folder, algo.name, graph.name, keep.algo.log.files,
+                                                   plot.format, plot.layout, force)
+                }
+                
+            }
+            
+        }
+        
+        
     }
     
 }
@@ -341,14 +375,19 @@ partition.network = function(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu
 # prop.mispls: a vector of values regarding proportion of misplaced links
 # prop.negs: a vector of values regarding proportion of negative links (for now, it is not operational)
 # in.rand.net.folders: a vector of values regarding input random graph folders. Sequantial integers (1, .., 10)
-# cor.clu.exact.algo: the name of correlation clustering algorithm to run
+# cor.clu.heur.algos: the names of correlation clustering heuristic algorithms to run
+# heur.reps: a sequence of values containing repetition numbers, i.e. 1, 2, 3, 4, etc.
+# cor.clu.exact.algos: the names of exact correlation clustering algorithms to run
+# exact.reps: a sequence of values containing repetition numbers, i.e. 1, 2, 3, 4, etc.
+# keep.algo.log.files: 
 # plot.format: plot format(s), such as PDF, PNG or NA (it means 'no plotting')
 # plot.layout: plot layout, such as "kamada.kawai", "fruchterman.reingold", "bn_zheng" or "circle"
 # force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
-partition.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders, cor.clu.exact.algo, keep.algo.log.files,
-                              plot.format, plot.layout, force)
+partition.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders,
+                              cor.clu.heur.algos, heur.reps, cor.clu.exact.algos, exact.reps, 
+                              keep.algo.log.files, plot.format, plot.layout, force)
 {
     tlog("starts partitioning networks")
     for (n in graph.sizes) {
@@ -367,8 +406,9 @@ partition.networks = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.ran
                 for (network.no in in.rand.net.folders) {
                     tlog(16, "partitioning networks => network.no: ", network.no)
                     
-                    partition.network(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu.exact.algo, keep.algo.log.files,
-                                      plot.format, plot.layout, force)
+                    partition.network(n, l0, d, prop.mispl, prop.neg, network.no, 
+                                      cor.clu.heur.algos, heur.reps, cor.clu.exact.algos, exact.reps, 
+                                      keep.algo.log.files, plot.format, plot.layout, force)
                 }
                 
             }
