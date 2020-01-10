@@ -21,7 +21,8 @@ reorganize.network.folder.by.detected.imbalance = function(counter.per.detected.
 		    new.network.no = counter.per.detected.imb.interval[[desc]]
 		    new.eval.folder = get.eval.folder.path(n, l0, d, NA, desc, prop.neg, k=ALL, new.network.no, cor.clu.exact.algo, NA)
             dir.create(new.eval.folder, showWarnings=FALSE, recursive=TRUE)
-
+            print("new folder")
+            print(new.eval.folder)
             source.eval.folder = get.eval.folder.path(n, l0, d, prop.mispl, NA, prop.neg, k=ALL, network.no, cor.clu.exact.algo, graph.desc.name)
             file.copy(source.eval.folder, new.eval.folder, recursive=TRUE)
 		    
@@ -72,7 +73,7 @@ reorganize.csv.results.by.detected.imbalance = function(n, l0, d, prop.mispls, p
     		tlog(20, "evaluating partitions => algo.name: ", cor.clu.exact.algo)
 
     		
-    		
+    		counter.per.detected.imb.interval = list()
     		for(prop.mispl in prop.mispls){
     		    tlog(8, "evaluating partitions => prop.mispl: ", prop.mispl)
     		    
@@ -83,7 +84,6 @@ reorganize.csv.results.by.detected.imbalance = function(n, l0, d, prop.mispls, p
     		    for(prop.neg in prop.negs){
     		        tlog(12, "evaluating partitions => prop.neg: ", prop.neg)
     		        
-    		        counter.per.detected.imb.interval = list()
 
     		        net.folder = get.input.network.folder.path(n, l0, d, prop.mispl, prop.neg, network.no=NA)
     		        if(dir.exists(net.folder)){
@@ -104,7 +104,6 @@ reorganize.csv.results.by.detected.imbalance = function(n, l0, d, prop.mispls, p
                 	            df = as.matrix(read.csv(table.file, row.names = 1, header= TRUE, check.names=FALSE, stringsAsFactors=FALSE))
                 	            detected.imb.val = as.numeric(df[,IMB.PERC.COL.NAME])
                 	            detected.imb.val = as.numeric(detected.imb.val)/100 # convert to proportion from percentage
-                	            
                 	            counter.per.detected.imb.interval =
                 	                reorganize.network.folder.by.detected.imbalance(counter.per.detected.imb.interval, detected.imb.val, n, l0, d, prop.mispl,
                 	                                                           prop.neg, k, network.no, cor.clu.exact.algo, graph.desc.name)
