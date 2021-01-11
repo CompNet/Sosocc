@@ -1,7 +1,7 @@
 # Sosocc
 Space of Optimal Solutions of the Correlation Clustering Problem
 
-* Copyright 2020-21 Nejat Arinik, Vincent Labatut, Rosa Figueiredo
+* Copyright 2020-21 Nejat Arinik, Vincent Labatut
 
 Sosocc is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see the file `LICENCE`
 
