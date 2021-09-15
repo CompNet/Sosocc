@@ -1,14 +1,32 @@
 
-#################################################################
-# Exact Approach of Correlation Clustering (CC) problem
-#################################################################
+# ===============================================================
+# Exact Approach: ExCC
+# ===============================================================
 
-COR.CLU.ExCC <- "ExCC" # only for 1 optimal solution
-COR.CLU.ExCC.ENUM.ALL <- "ExCC-all" # for all optimal solutions
+NB.THREAD = 4
+
+COR.CLU.ExCC <- "ExCC"
+COR.CLU.ExCC.ENUM.ALL <- "OneTreeCC"
 ExCC.LIB.FOLDER = file.path(LIB.FOLDER,COR.CLU.ExCC)
-ExCC.JAR.PATH = paste(ExCC.LIB.FOLDER,"cplex-partition.jar",sep="/") 
-#CPLEX.BIN.PATH = "/users/narinik/Cplex/ILOG/CPLEX_Studio128/cplex/bin/x86-64_linux/" # in gaia cluster - CERI
-CPLEX.BIN.PATH = "/opt/ibm/ILOG/CPLEX_Studio128/cplex/bin/x86-64_linux/" # in my personel computer
+ExCC.JAR.PATH = paste(ExCC.LIB.FOLDER,paste0(COR.CLU.ExCC,".jar"),sep="/")
+#CPLEX.BIN.PATH = "/users/narinik/Cplex/ILOG/CPLEX_Studio128/cplex/bin/x86-64_linux/"
+CPLEX.BIN.PATH = "/opt/ibm/ILOG/CPLEX_Studio201/cplex/bin/x86-64_linux/"
+
+ExCCAll.LIB.FOLDER = file.path(LIB.FOLDER,COR.CLU.ExCC)
+ExCCAll.JAR.PATH = paste(ExCC.LIB.FOLDER,paste0(COR.CLU.ExCC,".jar"),sep="/")
+ExCCAll.MAX.NB.SOLS = 1000
+ExCCAll.MAX.TIME.LIMIT = 3600*12 # 12 hours
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+
+ENUMCC = "EnumCC"
+ENUMCC.LIB.FOLDER = file.path(LIB.FOLDER,ENUMCC)
+ENUMCC.FOLDER = file.path(LIB.FOLDER,ENUMCC)
+ENUMCC.JAR.PATH = paste(ENUMCC.LIB.FOLDER,paste0(ENUMCC,".jar"),sep="/")
+
+ENUMCC.MAX.NB.SOLS = 1000 # we know that our method is not efficient for very large number of solutions
+ENUMCC.MAX.TIME.LIMIT = 3600*12 # 12 hours
 
 
 
@@ -90,7 +108,7 @@ write.graph.ils = function(graph, file.path){
 
 
 #############################################################################################
-# 
+# It returns the description code of the method ExCC or OneTreeCC.
 #############################################################################################
 get.ExCC.code <- function(enum.all)
 {
@@ -102,46 +120,104 @@ get.ExCC.code <- function(enum.all)
 
 
 #############################################################################################
-# 
+# It returns the command of the method ExCC. Note that OneTreeCC is also called through this function.
 #############################################################################################
 get.ExCC.command <- function(algo.name, input.folder, out.folder, graph.name)
 {
 	is.cp = "true" # in any case, use cutting plane approach
-
 	is.enum.all = "false"
-	tilim = 3600 # 1 hour
+	# tilim = 3600 # 1 hour
 	if(algo.name == COR.CLU.ExCC.ENUM.ALL){
 		is.enum.all = "true"
-		tilim = -1
 	}
-		
+	
 	print(graph.name)
 	input.file = paste("'", input.folder, "/", graph.name, "'", sep="")
+	input.file.for.g = file.path(input.folder, graph.name)
+	g = read.graph.ils(input.file.for.g)
 	
-	# An example:
-	# java -Djava.library.path=/users/narinik/Cplex/ILOG/CPLEX_Studio128/cplex/bin/x86-64_linux/
-	# -DinFile=data/test.G -DoutDir=. -Dcp=false -DenumAll=false -Dtilim=-1 -DlazyInBB=false
-	# -DusercutInBB=false -DMaxTimeForRelaxationImprovement=-1 -jar exe/cplex-partition.jar
+	initSolutionFilePath = file.path(out.folder,"..","..",COR.CLU.ExCC,SIGNED.UNWEIGHTED.FILE,"membership0.txt")
+	if(!file.exists(initSolutionFilePath))
+		initSolutionFilePath="''"
 	
-	cmd = 
-		paste(
+	cmd = "NONE"
+	if(is.enum.all == "false"){
+		# An example:
+		# java -Djava.library.path=/users/narinik/Cplex/ILOG/CPLEX_Studio128/cplex/bin/x86-64_linux/
+		# -DinFile="in/""$name" -DoutDir="out/""$modifiedName" -DenumAll=false -Dcp=true -DMaxTimeForRelaxationImprovement=20
+		# -DuserCutInBB=false -DinitSolutionFilePath="$initSolutionFilePath" -DLPFilePath="$LPFilePath"
+		# -DonlyFractionalSolution=false -DfractionalSolutionGapPropValue=-1.0 -DnbThread=2 -Dverbose=true -Dtilim=200 -jar exe/ExCC.jar
+		
+		# -------------------------------------------------------------------------
+		# TODO handle this in a better way, for instance, use small values for sparse networks
+		# TODO write a function called 'estimate.max.time.for.relaxation.improvement(..)'
+		maxTimeForRelaxationImprovement = "600"
+		if(vcount(g)>39 && vcount(g)<=50)
+			maxTimeForRelaxationImprovement = "4500" # 1h15m
+		else if(vcount(g)>50)
+			maxTimeForRelaxationImprovement = "10000" # 166 mins 
+		# -------------------------------------------------------------------------
+		
+		cmd = 
+			paste(
 				"java",		
 				paste("-Djava.library.path=", CPLEX.BIN.PATH, sep=""),
 				paste0("-DinFile=", input.file),
 				paste0("-DoutDir=", out.folder),
 				paste0("-Dcp=",is.cp),
 				paste0("-DenumAll=",is.enum.all),
-				paste0("-Dtilim=",tilim),
-				paste0("-DMaxTimeForRelaxationImprovement=","-1"), # no specific time limit, use the default one
+				paste0("-Dtilim=",-1),
+				paste0("-DtilimForEnumAll=",-1),
+				paste0("-DsolLim=",1),
+				paste0("-DMaxTimeForRelaxationImprovement=",maxTimeForRelaxationImprovement),
 				"-DlazyInBB=false",
 				"-DuserCutInBB=false",
+				paste0("-DinitSolutionFilePath=",initSolutionFilePath),
+				"-Dverbose=true",
+				paste0("-DnbThread=", NB.THREAD),
+				"-DLPFilePath=''",
+				"-DonlyFractionalSolution=false",
+				"-DfractionalSolutionGapPropValue=-1",
 				"-jar",
 				ExCC.JAR.PATH,
 				sep=" "
-		)
+			)
+	} else { # if(is.enum.all == "true") >> OneTreeCC
+		# An example:
+		# java -DinFile="in/""$name" -DoutDir="out/""$modifiedName" -DenumAll=true
+		# -Dcp=false -DinitSolutionFilePath="$initSolutionFilePath" -DLPFilePath="$LPFilePath"
+		# -DnbThread=2 -Dverbose=true -Dtilim=-1 -DtilimForEnumAll=60 -DsolLim=100 -jar exe/ExCC.jar
+		
+		LP.filepath = file.path(out.folder,"..","..",COR.CLU.ExCC,SIGNED.UNWEIGHTED.FILE,"strengthedModelAfterRootRelaxation.lp")
+		if(file.exists(LP.filepath)) {
+			cmd = 
+				paste(
+					"java",		
+					paste("-Djava.library.path=", CPLEX.BIN.PATH, sep=""),
+					paste0("-DinFile=", input.file),
+					paste0("-DoutDir=", out.folder),
+					paste0("-Dcp=","false"),
+					paste0("-DenumAll=","true"),
+					paste0("-Dtilim=",-1),
+					paste0("-DtilimForEnumAll=",ExCCAll.MAX.TIME.LIMIT),
+					paste0("-DsolLim=",ExCCAll.MAX.NB.SOLS),
+					paste0("-DMaxTimeForRelaxationImprovement=","-1"), # no specific time limit, use the default one
+					"-DlazyInBB=false",
+					"-DuserCutInBB=false",
+					paste0("-DinitSolutionFilePath=",initSolutionFilePath),
+					"-Dverbose=true",
+					paste0("-DnbThread=", NB.THREAD),
+					paste0("-DLPFilePath='",LP.filepath,"'"),
+					"-DonlyFractionalSolution=false",
+					"-DfractionalSolutionGapPropValue=-1",
+					"-jar",
+					ExCC.JAR.PATH,
+					sep=" "
+				)
+		}
+	}
 
 	print(cmd)
-
 	return(cmd)
 }
 
@@ -150,21 +226,91 @@ get.ExCC.command <- function(algo.name, input.folder, out.folder, graph.name)
 
 
 
-#############################################################################################
-# 
-#############################################################################################
-prepare.algo.output.filename = function(part.folder, algo.name, g.name){
 
-	if(algo.name == COR.CLU.ExCC)
-	{
-	    # since the ExCC program outputs the result by writing into a file whose the name has a suffix 'O'. 
-	    # This is because the program can also handle enumerate all optimal solutions. 
-	    # And in this case, it outputs like that: "sol0.txt", "sol1.txt", and so on
-		ExCC.output.file <- file.path(part.folder, "ExCC-result.txt")
-		id=0
-		file.rename(from=ExCC.output.file, to=file.path(part.folder, paste0(ALGO.RESULT.FILE.PREFIX,id,".txt")))
+#############################################################################################
+# It returns the description code of the method EnumCC.
+#############################################################################################
+get.EnumCC.code <- function(maxNbEdit)
+{
+	result <- paste0(ENUMCC,"-maxNbEdit",maxNbEdit)
+	return(result)
+}
+
+
+#############################################################################################
+# It returns the command of the method EnumCC.
+#############################################################################################
+get.EnumCC.command <- function(algo.name, input.folder, out.folder, graph.name)
+{
+	print(algo.name)
+	base.algo.name <- strsplit(x=algo.name, split="-", fixed=TRUE)[[1]][1]
+	params.str <- gsub(paste0(base.algo.name,"-"),"",algo.name)
+	print(params.str)
+	
+	print(graph.name)
+	input.file = paste("'", input.folder, "/", graph.name, "'", sep="")
+	
+	maxNbEdit = as.integer(gsub("maxNbEdit","",params.str))
+	
+	cmd = "NONE"
+	LP.filepath = file.path(out.folder,"..","..",COR.CLU.ExCC,SIGNED.UNWEIGHTED.FILE,"strengthedModelAfterRootRelaxation.lp")
+	
+	if(file.exists(LP.filepath)) {
+		cmd = 
+			paste(
+				"java",		
+				paste("-Djava.library.path=", CPLEX.BIN.PATH, sep=""),
+				paste0("-DinFile=", input.file),
+				paste0("-DoutDir=", out.folder),
+				paste0("-DLPFilePath=", LP.filepath),
+				paste0("-DinitMembershipFilePath=", file.path(out.folder,"..","..",COR.CLU.ExCC,SIGNED.UNWEIGHTED.FILE,"membership0.txt")),
+				paste0("-DnbThread=",NB.THREAD),
+				paste0("-DmaxNbEdit=",maxNbEdit),
+				paste0("-DsolLim=",ENUMCC.MAX.NB.SOLS),
+				paste0("-Dtilim=",ENUMCC.MAX.TIME.LIMIT),
+				paste0("-DJAR_filepath_RNSCC=",paste(ENUMCC.LIB.FOLDER,paste0("RNSCC.jar"),sep="/")),
+				"-jar",
+				ENUMCC.JAR.PATH,
+				sep=" "
+			)
 	}
-	else if(algo.name == COR.CLU.ExCC.ENUM.ALL){
+	
+	print(cmd)
+	return(cmd)
+}
+
+
+
+
+
+#############################################################################################
+# It prepares the output of a partitioning algorithm. It can be:
+# - renaming the output result files
+# - creating an output file called 'allResults.txt', which indicates the absolute paths of the solutions obtained.
+#############################################################################################
+prepare.algo.output = function(part.folder, algo.name, g.name){
+
+    if(algo.name == COR.CLU.ExCC)
+    {
+        ExCC.output.file <- file.path(part.folder, "ExCC-result.txt")
+        id=0
+        file.rename(from=ExCC.output.file, to=file.path(part.folder, paste0(ALGO.RESULT.FILE.PREFIX,id,".txt")))
+		########################
+		sol.paths = list.files(path = part.folder,
+				pattern = paste0("^", ALGO.RESULT.FILE.PREFIX, ".*\\.txt$"), full.names = TRUE, recursive = FALSE)
+		#write.table(x=sol.paths, file=file.path(part.folder,"allResults.txt"), row.names=F, col.names=F, quote=F)
+		sol.paths.ordered = paste0(part.folder,"/",MBRSHP.FILE.PREFIX,seq(0,length(sol.paths)-1),".txt")
+		write.table(x=sol.paths.ordered, file=file.path(part.folder,"allResults.txt"), row.names=F, col.names=F, quote=F)
+		
+	}
+    else if(algo.name == COR.CLU.ExCC.ENUM.ALL){
+		sol.paths = list.files(path = part.folder,
+				pattern = paste0("^", ALGO.RESULT.FILE.PREFIX, ".*\\.txt$"), full.names = TRUE, recursive = FALSE)
+		#write.table(x=sol.paths, file=file.path(part.folder,"allResults.txt"), row.names=F, col.names=F, quote=F)
+		sol.paths.ordered = paste0(part.folder,"/",MBRSHP.FILE.PREFIX,seq(0,length(sol.paths)-1),".txt")
+		write.table(x=sol.paths.ordered, file=file.path(part.folder,"allResults.txt"), row.names=F, col.names=F, quote=F)
+	}
+	else if(startsWith(algo.name,ENUMCC)){
 		# do nothing
 	}
 	
@@ -211,8 +357,12 @@ get.algo.commands <- function(algo.names, ...)
 	
 	for(algo.name in algo.names)
 	{	
-		if(startsWith(algo.name,COR.CLU.ExCC))
+        if(startsWith(algo.name,COR.CLU.ExCC))
+            result <- c(result, get.ExCC.command(algo.name, ...))
+		else if(startsWith(algo.name,COR.CLU.ExCC.ENUM.ALL))
 			result <- c(result, get.ExCC.command(algo.name, ...))
+        else if(startsWith(algo.name,ENUMCC))
+            result <- c(result, get.EnumCC.command(algo.name, ...))
 	}
 	
 	return(result)

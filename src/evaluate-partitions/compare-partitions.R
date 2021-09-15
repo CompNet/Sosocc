@@ -21,9 +21,9 @@ compare.partition.pair.as.distance <- function(partition1, partition2, measures=
 	names(result) <- measures
 	
 	library(igraph)
-	library(clues)
-	library(NMF)
-	library(e1071) # hamming distance
+	#library(clues)
+	#library(NMF)
+	#library(e1071) # hamming distance
 	library(entropy)
 	
 	
@@ -145,7 +145,8 @@ compare.partition.pair.as.distance <- function(partition1, partition2, measures=
 ################################################################
 compute.distance.scores.by.row = function(measure, i, nb.part2, is.mtrx.symmetric, part.folder1, part.folder2){
 	
-	table.file = file.path(part.folder1, paste0(MBRSHP.FILE.PREFIX,i,".txt"))
+	#table.file = file.path(part.folder1, paste0(MBRSHP.FILE.PREFIX,i,".txt"))
+	table.file = read.table(file.path(part.folder1,"allResults.txt"))$V1[i+1] # new: obtaining the partition in this way is common to all partitioning methods
 	part1 <- as.numeric(as.matrix(read.table(file=table.file, header=FALSE)))
 	
 	require(bigmemory)
@@ -158,7 +159,8 @@ compute.distance.scores.by.row = function(measure, i, nb.part2, is.mtrx.symmetri
 		j = nextElem(it)
 		# when it is rectangular matrix, process each case of the current row. Otherwise, process upper triangle part of the matrix
 		if(!is.mtrx.symmetric || i < j){ # if the matrix is rectangular (i.e. non-symmetric), it enters into this code block in any case
-			table.file = file.path(part.folder2, paste0(MBRSHP.FILE.PREFIX,j,".txt"))
+			#table.file = file.path(part.folder2, paste0(MBRSHP.FILE.PREFIX,j,".txt"))
+			table.file = read.table(file.path(part.folder2,"allResults.txt"))$V1[j+1] # new: obtaining the partition in this way is common to all partitioning methods
 			part2 <- as.numeric(as.matrix(read.table(file=table.file, header=FALSE)))
 			result = round(compare.partition.pair.as.distance(part1, part2, measure), digits=4)
 					

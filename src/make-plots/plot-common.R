@@ -768,8 +768,8 @@ make.vioplot = function(matrix.list, plot.folder, plot.filename, plot.format, ti
 #################################################################
 make.grouped.vioplot2 = function(matrix.list.of.list2, plot.folder, plot.filename, plot.format,
 		param.values, ctgry.names, title, ylabel, ylimit){
-    #### print("HERE2")
-
+    print("HERE2")
+print(matrix.list.of.list2)
     
 	library(vioplot)
 	
@@ -780,9 +780,11 @@ make.grouped.vioplot2 = function(matrix.list.of.list2, plot.folder, plot.filenam
 	x2.at = c()
 	x.axis.names = c()
 	
-	
+	print(param.values)
 	for(i in 1:length(param.values)){
 		l = matrix.list.of.list2[[i]] # list
+		print("---------")
+		print(l)
 		if(length(l) == 0){
 			l = list("NA"=c(-50)) # workaround: if there is no info, put negative value, it will be invisible in the plot
 		}
@@ -813,8 +815,10 @@ make.grouped.vioplot2 = function(matrix.list.of.list2, plot.folder, plot.filenam
 #	boxplot(v.list, names = x.axis.names, xaxs = FALSE, at = x.at, horizontal=FALSE,  las=2, ylim=ylimit,
 #		col=c2, medcol=c1, whiskcol=c1, staplecol=c1, boxcol=c1, outcol=c1, cex.axis=0.7)
 #	points(x=x.at, y=mean.values,col="red",pch=18)
-
-	vioplot(v.list, names = x.axis.names, xaxs = FALSE, at = x.at, horizontal=FALSE,  las=2, ylim=ylimit, colMed="blue", pchMed=16, rectCol="palevioletred", lineCol="violetred",
+print(v.list)
+print(x.axis.names)
+print(x.at)
+	vioplot(v.list, names = x.axis.names, xaxs = NA, at = x.at, horizontal=FALSE,  las=2, ylim=ylimit, colMed="blue", pchMed=16, rectCol="palevioletred", lineCol="violetred",
 	col=c2, medcol=c1, whiskcol=c1, staplecol=c1, boxcol=c1, outcol=c1, cex.lab=1.5, cex.axis=0.6, cex.main=1.5) # cex.axis=0.7,
     points(x.at, mean.values,col="green",pch=24)
 

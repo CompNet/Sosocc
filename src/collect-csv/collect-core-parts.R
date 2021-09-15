@@ -8,13 +8,22 @@
 
 
 #################################################################
+# It constructs a single row of the csv file in output. It retrieves the statistics 
+#   related to core parts for the given values of the input parameters. 
 #
+# n: graph order
+# l0: number of modules
 # d: density
-# k: nb cluster
+# prop.mispl: proportion of misplaced links
+# prop.neg: proportion of negative links
+# network.no: network id (the identifiers start from 1
+# cor.clu.exact.algo: the name of correlation clustering algorithm to run
+# comp.measures: comparison/evaluation measures used to obtain core parts.
+# force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
 retreive.core.parts = function(n, l0, d, prop.mispl, prop.neg, network.no,
-		cor.clu.exact.algo, comp.measures, force, plot.formats)
+		cor.clu.exact.algo, comp.measures, force)
 {
 	
 	data = c()
@@ -138,22 +147,23 @@ retreive.core.parts = function(n, l0, d, prop.mispl, prop.neg, network.no,
 
 
 #################################################################
+# It is the starting method in the aim of collecting the statistics related to core parts. 
+#   It handles all networks by graph.sizes,  prop.mispls, my.prop.negs and in.rand.net.folders
+#   For the given value of the parameter l0, it generates a csv file.
 #
-# graph.sizes
-# d: density
-# k: nb cluster
-# prop.mispls
-# prop.negs
-# cor.clu.heur.algos
-# heur.reps: heuristic repetitions. Sequantial integers (1, .., 100)
-# cor.clu.exact.algos
-# in.rand.g.folders: input random graph folders. Sequantial integers (1, .., 10)
-# force
-# plot.formats
+# graph.sizes: a vector of values regarding graph orders to be considered
+# d: density (it is a single value)
+# l0: number of modules to be considered (it is a single value)
+# prop.mispls: a vector of values regarding proportion of misplaced links
+# prop.negs: a vector of values regarding proportion of negative links (for now, it is not operational)
+# in.rand.net.folders: a vector of values regarding input random graph folders. Sequantial integers (1, .., 10)
+# cor.clu.exact.algo: the name of correlation clustering algorithm to run
+# comp.measures: comparison/evaluation measures used to obtain core parts.
+# force: whether or not the existing files are overwritten by a fresh call of all corresponding methods (e.g partitioning method)
 #
 ##################################################################
 collect.core.parts = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.rand.net.folders,
-		cor.clu.exact.algo, comp.measures, force, plot.formats)
+		cor.clu.exact.algo, comp.measures, force)
 {
 	all.data = c()
 	
@@ -178,7 +188,7 @@ collect.core.parts = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.ran
 					tlog(16, "collecting core parts => network.no: ", network.no)
 					
 					data = retreive.core.parts(n, l0, d, prop.mispl, prop.neg, network.no,
-							cor.clu.exact.algo, comp.measures, force, plot.formats)
+							cor.clu.exact.algo, comp.measures, force)
 					if(length(data)>0)
 						all.data = rbind(all.data, data)
 #					temp = c(temp, data)

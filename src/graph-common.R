@@ -1,7 +1,7 @@
 
 
 ########################################################################
-# 
+# It converts a weighted signed graph into an unweighted signed graph.
 ########################################################################
 convert.weight.into.unweight.input.graph = 
 		function(network.path, unweighted.network.path)

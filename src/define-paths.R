@@ -105,7 +105,7 @@ get.eval.folder.path.by = function(by, param.value, g.params)
 
 
 #################################################################
-# by: 
+# by: one of these values GRAPH.SIZE, PROP.MISPL, PROP.NEG, NETWORK.NO, ALGO.NAME, GRAPH.DESC.NAME
 #
 ##################################################################
 get.plot.folder.path.by = function(g.params, by, subplot.by=NA){

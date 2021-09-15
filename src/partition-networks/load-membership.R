@@ -19,7 +19,14 @@ source("src/define-constants.R")
 load.external.partition <- function(folder.name, result.filename, algo.name, keep.tmp)
 {	
 	if(startsWith(algo.name,COR.CLU.ExCC))
-		result <- load.ExCC.partition(folder.name, result.filename)
+		result <- read.table(file.path(folder.name, result.filename))$V1
+		#result <- load.ExCC.partition(folder.name, result.filename)
+	else if(startsWith(algo.name,COR.CLU.ExCC.ENUM.ALL))
+		result <- read.table(file.path(folder.name, result.filename))$V1
+    else if(startsWith(algo.name,ENUMCC)){
+        #result = NA # if it is NA, then, there will not be any post processing for membership files/log files
+        result <- read.table(file.path(folder.name, result.filename))$V1
+    }
 	else
 	{	# TODO treat other external tools here
 	}

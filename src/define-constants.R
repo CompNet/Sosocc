@@ -68,8 +68,17 @@ ALL.K.FOLDER.NAME = "all-clusters"
 
 
 
-
-
+#############################################################################################
+# Some parameters used for evaluating the partition results
+#############################################################################################
+MAX.NB.SOLS.FOR.PROCESSING = 5000
+EVAL.NB.ENUM.FILENAME = "nb-enum"
+NB.ENUM.COL.NAME = "nb enumeration"
+EVAL.EXEC.TIME.FILENAME = "exec-time"
+EVAL.DELAY.EXEC.TIME.FILENAME = "delay-exec-time"
+EVAL.ENUM.EXEC.TIME.FILENAME = "enum-exec-time"
+DELAY.EXEC.TIME.COL.NAME = "delay exec time (s)"
+ENUM.STEP.NO.COL.NAME="Enum Step No"
 
 
 #############################################################################################

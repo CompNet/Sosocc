@@ -51,15 +51,16 @@ load.result.files = function(part.folder, algo.name) {
 load.membership.files = function(part.folder) {
     mbrshps = list()
     #paste0("^membership",".*\\.txt$")
-    mbrshp.files = list.files(path = part.folder,
-                              pattern = paste0("^", MBRSHP.FILE.PREFIX, ".*\\.txt$"))
+    #mbrshp.files = list.files(path = part.folder, pattern = paste0("^", MBRSHP.FILE.PREFIX, ".*\\.txt$"))
+	mbrshp.files = read.table(file.path(part.folder,"allResults.txt"))$V1
     nb.mbrshp.file = length(mbrshp.files)
     
     if (nb.mbrshp.file > 0) {
         for (id in 0:(nb.mbrshp.file - 1)) {
             # load the resulting partition file
-            table.file = file.path(part.folder, paste0(MBRSHP.FILE.PREFIX, id, ".txt"))
-            mbrshp <-
+            #table.file = file.path(part.folder, paste0(MBRSHP.FILE.PREFIX, id, ".txt"))
+            table.file = mbrshp.files[id+1]
+			mbrshp <-
                 as.numeric(as.matrix(read.table(
                     file = table.file, header = FALSE
                 )))
@@ -120,12 +121,13 @@ write.membership.files = function(part.folder, mbrshps) {
     n = length(mbrshps)
     for (id in 0:(n - 1)) {
         table.file = file.path(part.folder, paste0(MBRSHP.FILE.PREFIX, id, ".txt"))
-        write.table(
-            x = mbrshps[[id + 1]],
-            file = table.file,
-            row.names = FALSE,
-            col.names = FALSE
-        )
+        if(!is.na(mbrshps[[id + 1]]))
+            write.table(
+                x = mbrshps[[id + 1]],
+                file = table.file,
+                row.names = FALSE,
+                col.names = FALSE
+            )
     }
 }
 
@@ -205,7 +207,7 @@ apply.partitioning.algorithm = function(part.folder, in.folder, algo.name, g.nam
     exec.time = as.numeric(end) - as.numeric(start)
     # save exec.time: write into file
     write(x = exec.time, file = file.path(part.folder, EXEC.TIME.FILENAME))
-    prepare.algo.output.filename(part.folder, algo.name, g.name)
+    prepare.algo.output(part.folder, algo.name, g.name)
 }
 
 
@@ -240,12 +242,16 @@ process.partitioning.algorithm <- function(part.folder, in.folder, algo.name, gr
             
             apply.partitioning.algorithm(part.folder, in.folder, algo.name, graph.name, plot.formats)
             
-            mbrshps = load.result.files(part.folder, algo.name)
-            write.membership.files(part.folder, mbrshps)
-            remove.result.files(part.folder)
-            
-            if(!keep.algo.log.files)
-                remove.log.files(part.folder)
+            process.mbrshp <- !is.membership.file.created(part.folder)
+            if(process.mbrshp){
+                mbrshps = load.result.files(part.folder, algo.name)
+				print(mbrshps)
+                write.membership.files(part.folder, mbrshps)
+                remove.result.files(part.folder)
+                
+                if(!keep.algo.log.files)
+                    remove.log.files(part.folder)
+            }
         }
         else if (!process.algo && process.mbrshp) {
             tlog(
@@ -290,7 +296,7 @@ process.partitioning.algorithm <- function(part.folder, in.folder, algo.name, gr
 #################################################################
 # It partitions a given network based on the considered algorithm name and graph type (weighted or not, etc.).
 #
-# n: graph size
+# n: graph order
 # l0: number of cluster
 # d: density
 # prop.mispl: proportion of misplaced links
@@ -335,7 +341,7 @@ partition.network = function(n, l0, d, prop.mispl, prop.neg, network.no, cor.clu
 # It is the starting method in the aim of partitioning the considered networks. 
 #   It handles all networks by graph.sizes,  prop.mispls, my.prop.negs and in.rand.net.folders
 #
-# graph.sizes: a vector of values regarding graph sizes to be considered
+# graph.sizes: a vector of values regarding graph orders to be considered
 # d: density (it is a single value)
 # l0: number of clusters to be considered (it is a single value)
 # prop.mispls: a vector of values regarding proportion of misplaced links

@@ -1,30 +1,34 @@
 
 #################################################################
-#
+# It generates a membership vector associated with a partition of (almost) equal-sized modules. 
+# This generation respects the given values of the parameters n and l0.
 #################################################################
-generate.param.membership = function(n, k){
-	nk = n%/%k
-	clu.sizes = rep(nk, k)
-	nb.remaining = n%%k
-	remaining = rep(0, k)
+generate.param.membership = function(n, l0){
+	nl0 = n%/%l0
+	clu.sizes = rep(nl0, l0)
+	nb.remaining = n%%l0
+	remaining = rep(0, l0)
 	if(nb.remaining > 0)
 		remaining[1:nb.remaining] = 1
 	clu.sizes = clu.sizes + remaining
-	membership <- rep(1:k,clu.sizes)
+	membership <- rep(1:l0,clu.sizes)
 	return(membership)
 }
 
 
 
-# we suppose that the graph is complete. Because, we have not applied yet density here.
-compute.prop.neg = function(n, d, k, prop.mispl){
+#################################################################
+# It computes the proportion of negative links given four parameters: n, d, l0 and prop.mispl
+# This calculation is specific to our random signed graph generator. 
+#################################################################
+compute.prop.neg = function(n, d, l0, prop.mispl){
 
 	prop.mispl = as.numeric(prop.mispl)
 	n = as.numeric(n)
-	k = as.numeric(k)
+	l0 = as.numeric(l0)
 	
-	# membership <- rep(1:k,each=n%/%k)
-	membership <- generate.param.membership(n, k)
+	# membership <- rep(1:l0,each=n%/%l0)
+	membership <- generate.param.membership(n, l0)
 	pext <- sum(apply(t(combn(x=max(membership),m=2,simplify=TRUE)), 1, function(r)
 					{	n1 <- length(which(membership==r[1]))
 						n2 <- length(which(membership==r[2]))

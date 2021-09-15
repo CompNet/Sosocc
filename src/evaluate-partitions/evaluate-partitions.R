@@ -1,4 +1,32 @@
 
+#################################################################
+# Given a log file produced by OneTreeCC it retrieves the execution time of its first phase, i.e.
+#   the execution time to obtain an optimal solution.
+#################################################################
+retreive.ExCC.All.first.phase.exec.time.from.log.file = function(exec.time.filepath){
+    #print(exec.time.filepath)
+    # open and read the file
+    #tlog(14,"Trying to load file: \"",exec.time.filepath,"\"")
+    con <- file(exec.time.filepath, "r")
+    lines <- readLines(con)
+    close(con)
+
+    line.of.interest = NA
+    for(line in lines){
+        if(grepl("Total ", line) == TRUE){
+            line.of.interest = line
+            break; 
+        }
+    }
+
+    parts = unlist(strsplit(line.of.interest, "="))
+    s.raw.exec.time = unlist(strsplit(parts[2], "sec."))[1]
+    s.raw.exec.time1 = gsub(" ","",s.raw.exec.time)
+    exec.time = as.numeric(sub(",", ".", s.raw.exec.time1, fixed = TRUE))
+
+    return(exec.time)
+}
+
 
 
 #################################################################
@@ -84,48 +112,72 @@ process.algo.evaluation = function(eval.folder, part.folder, algo.name, net.fold
     graph.name = paste0(graph.desc.name,".G")
 	
 	is.mtrx.symmetric = TRUE # this comes by definition of the method
-	mbrshps = load.membership.files(part.folder)
-	m = length(mbrshps) # nb partition
+	#mbrshps = load.membership.files(part.folder)
+	#m = length(mbrshps) # nb partition
+	m = length(read.table(file.path(part.folder,"allResults.txt"))$V1)
 	print(m)
 	if(m>0){ # if there is at least 1 optimal solution
 		network.path = file.path(net.folder,graph.name)
 		g = read.graph.ils(network.path)
 		n = vcount(g) # nb node
-	
-		
+
 		# ---------------------------------------------------------------------
 		# nb solution
-		tlog(24, "process algo evaluation: nb solution")
-		table.file = file.path(eval.folder, paste0(EVAL.NB.SOL.FILENAME,".csv"))
-		mtrx = matrix(m, 1, 1) # put the value into matrix, that way we will process all results in the same way (i.e. via 'csv')
+        tlog(24, "process algo evaluation: nb solution")
+	    table.file = file.path(eval.folder, paste0(EVAL.NB.SOL.FILENAME,".csv"))
+        if(algo.name == get.ExCC.code(enum.all=FALSE) || algo.name == get.ExCC.code(enum.all=TRUE)) {		    
+		    mtrx = matrix(m, 1, 1) # put the value into matrix, that way we will process all results in the same way (i.e. via 'csv')
+        } else { # if enumPopulateCC
+            mtrx = matrix(length(readLines(file.path(part.folder, "allResults.txt"))), 1, 1)
+        }
+
+        if(mtrx[1,1] > ENUMCC.MAX.NB.SOLS)
+            mtrx[1,1] = ENUMCC.MAX.NB.SOLS
+
 		colnames(mtrx) = NB.SOL.COL.NAME
 		rownames(mtrx) = algo.name
 		write.csv(x=mtrx, file=table.file, row.names=TRUE)
+        
 		# ---------------------------------------------------------------------
 
 		
 		# ---------------------------------------------------------------------
 		# exec time
 		table.file = file.path(eval.folder, paste0(EVAL.EXEC.TIME.FILENAME,".csv"))
-		if(!file.exists(table.file) || force){	
+		if(!file.exists(table.file) || force){
 		    # read txt file, and write it into a csv file
 			result.f.path = file.path(part.folder, EXEC.TIME.FILENAME)
 			# there is a single 'exec time' value
 			exec.time = read.table(result.f.path)$V1
+
+            if(algo.name == COR.CLU.ExCC.ENUM.ALL) {
+                exec.time.first.phase = retreive.ExCC.All.first.phase.exec.time.from.log.file(file.path(part.folder, "logcplex.txt"))
+                exec.time = exec.time - exec.time.first.phase
+
+                ExCC.part.folder = file.path(part.folder,"..","..",get.ExCC.code(enum.all=FALSE),"signed-unweighted")
+                ExCC.table.file = file.path(ExCC.part.folder, paste0(EVAL.EXEC.TIME.FILENAME,".txt"))
+                ExCC.exec.time = read.table(ExCC.table.file)$V1 # this is total exec time
+                exec.time = exec.time + ExCC.exec.time
+				max.exec.time = ExCC.exec.time+ENUMCC.MAX.TIME.LIMIT
+				if(exec.time>max.exec.time)
+					exec.time = max.exec.time
+            }
+
+
 			mtrx = matrix(exec.time, 1, 1) # matrix with 1 element
 			colnames(mtrx) = c(EXEC.TIME.COL.NAME)
 			rownames(mtrx) = algo.name
 			write.csv(x=mtrx, file=table.file, row.names=TRUE)
 		}
 		# ---------------------------------------------------------------------
-		
+
 		
 		# ---------------------------------------------------------------------
 		# TODO: used RAM
 		#
 		# ---------------------------------------------------------------------
-		
-		
+	
+	
 		# ---------------------------------------------------------------------
 		# clusters
 		# we create matrix of size m x n where is m: nb solutions and n: nb nodes
@@ -134,29 +186,42 @@ process.algo.evaluation = function(eval.folder, part.folder, algo.name, net.fold
 		table.file = file.path(eval.folder, paste0(EVAL.CLU.INFO.TABLE.FILENAME,".csv"))
 		if(!file.exists(table.file) || force){
 			clu.result = c()
-			for(mbrshp in mbrshps){
-				clu.freq = table(mbrshp) # clu freq in terms of nb cluster
-				nb.clu = length(clu.freq)
-				remaining.freq = rep(NA, n-nb.clu) # at worst, there will be 'n' clusters
-				clu.result = rbind(clu.result, c(nb.clu, clu.freq, remaining.freq))
-			}
-			colnames(clu.result) = c(NB.CLU.COL.NAME, paste(CLUSTER.COL.NAME.PREFIX, seq(1,n), sep=" "))# e.g. "nb cluster", "clu1", "clu2", etc.
-			rownames(clu.result) = paste(algo.name, "sol", seq(0, m-1)) # e.g. "ExCC-All sol0", "ExCC-All sol1", etc.
-			write.csv(x=clu.result, file=table.file, row.names=TRUE)
+
+            if(m<=MAX.NB.SOLS.FOR.PROCESSING){
+				mbrshps = load.membership.files(part.folder)
+				
+			    for(mbrshp in mbrshps){
+				    clu.freq = table(mbrshp) # clu freq in terms of nb cluster
+				    nb.clu = length(clu.freq)
+				    remaining.freq = rep(NA, n-nb.clu) # at worst, there will be 'n' clusters
+				    #clu.result = rbind(clu.result, c(nb.clu, clu.freq, remaining.freq))
+					clu.result = rbind(clu.result, c(nb.clu))
+					
+			    }
+			    colnames(clu.result) = c(NB.CLU.COL.NAME)# e.g. "nb cluster", "clu1", "clu2", etc.
+				#colnames(clu.result) = c(NB.CLU.COL.NAME, paste(CLUSTER.COL.NAME.PREFIX, seq(1,n), sep=" "))# e.g. "nb cluster", "clu1", "clu2", etc.
+				rownames(clu.result) = paste(algo.name, "sol", seq(0, m-1)) # e.g. "ExCC-All sol0", "ExCC-All sol1", etc.
+			    write.csv(x=clu.result, file=table.file, row.names=TRUE)
+
+            }
 		}
 		# ---------------------------------------------------------------------
 		
-		
+
 		# ---------------------------------------------------------------------
 		# imbalance value and proportion
 		tlog(24, "process algo evaluation: imbalance")
 		table.file = file.path(eval.folder, paste0(EVAL.IMB.INFO.TABLE.FILENAME,".csv"))
 		if(!file.exists(table.file) || force){
 			imb.result = c()
-			my.mbrshps = mbrshps
-			# if it is the result of an exact algo, take just the first partition, which is enough for imbalance
-			# Later, we need to collect these values and take their average for 'summary' folder, average should be correct with only 1 value here
-			mbrshp = mbrshps[[1]]
+		#	my.mbrshps = mbrshps
+		#	# if it is the result of an exact algo, take just the first partition, which is enough for imbalance
+		#	# Later, we need to collect these values and take their average for 'summary' folder, average should be correct with only 1 value here
+		#	mbrshp = mbrshps[[1]]
+
+			first.sol.table.file = read.table(file.path(part.folder,"allResults.txt"))$V1[1]
+            #first.sol.table.file = file.path(part.folder, paste0(MBRSHP.FILE.PREFIX, 0, ".txt"))
+            mbrshp <- as.numeric(as.matrix(read.table(file = first.sol.table.file, header = FALSE)))
 
 			imb.count = as.numeric(compute.imbalance.from.membership(g, mbrshp, output.type = "count"))
 			imb.perc = as.numeric(compute.imbalance.from.membership(g, mbrshp, output.type = "percentage"))
@@ -172,7 +237,22 @@ process.algo.evaluation = function(eval.folder, part.folder, algo.name, net.fold
 		}
 		# ---------------------------------------------------------------------
 
-		
+
+
+        m.org = m
+        # -------------------------
+	    # TODO workaround, otherwise it takes too much time
+        print(m)
+		first.sol.table.file = read.table(file.path(part.folder,"allResults.txt"))$V1[1]
+		mbrshps <- as.numeric(as.matrix(read.table(file = first.sol.table.file, header = FALSE)))
+		m=1
+	    if(m<=MAX.NB.SOLS.FOR.PROCESSING){
+			mbrshps = load.membership.files(part.folder)
+            m = m.org
+        }
+	    # -------------------------	
+
+
 		# ---------------------------------------------------------------------
 		# distance measures
 		tlog(24, "process algo evaluation: distance")
@@ -183,44 +263,59 @@ process.algo.evaluation = function(eval.folder, part.folder, algo.name, net.fold
 			print(mtrx.file)
 			if(!file.exists(mtrx.file) || force){
 				dist.mtrx = NA
-				
-				# ===========================================================================
-				# This is the fast way to compute the normalization of VI and EDIT distances.
-				# We do not want to spend much time to compute their normalizations, if the raw distance are already computed
-				done = FALSE
-				if(measure == EDIT.NORM){
-					edit.mtrx.file = file.path(eval.folder, paste0(EVAL.DIST.MATRIX.FILE.PREFIX,"-",EDIT,".csv"))
-					if(file.exists(edit.mtrx.file)){
-						edit.dist.mtrx = as.matrix(read.csv(edit.mtrx.file, row.names = 1, header= TRUE, check.names=FALSE))
-						dist.mtrx = matrix(as.numeric(edit.dist.mtrx),nrow=nrow(edit.dist.mtrx), ncol=ncol(edit.dist.mtrx))/n
-						done = TRUE
-					}
-				}
-				# else if(measure == NVI){ # OLD CODE => WE NORMALIZE VI BY JOINT ENTROPY
-				#                           NORMALIZATION WITH LOG(N) DOES NOT ALLOW TO COMPARE DATASETS OF DIFFERENT SIZES
-				# 	vi.mtrx.file = file.path(eval.folder, paste0(EVAL.DIST.MATRIX.FILE.PREFIX,"-",VI,".csv"))
-				# 	if(file.exists(vi.mtrx.file)){
-				# 	    vi.dist.mtrx = as.matrix(read.csv(vi.mtrx.file, row.names = 1, header= TRUE, check.names=FALSE))
-				# 		dist.mtrx = matrix(as.numeric(vi.dist.mtrx),nrow=nrow(vi.dist.mtrx), ncol=ncol(vi.dist.mtrx))/log(n)
-				# 		done = TRUE
-				# 	}
-				# }
-				# ===========================================================================
-				
-				if(!done){
-					par.mode = TRUE
-					nb.core = PAR.MODE.NB.CORE.DEFAULT
-					chunk.size = PAR.MODE.CHUNK.SIZE.DEFAULT
-					if(m < PAR.MODE.THRESH.NB.MEM.FILE){ # if there is just a small amount of files, do it sequantially
-						par.mode = FALSE
-						nb.core = NA
-						chunk.size = NA
-					}
-					dist.mtrx = create.distance.matrix(measure, part.folder1=part.folder, nb.part1=m, algo.name1=algo.name, 
-							is.mtrx.symmetric, parallel.mode=par.mode, nb.core=nb.core, chunk.size=chunk.size)
-				}
-				
-				write.csv(x=dist.mtrx, file=mtrx.file)
+
+
+                if(measure == EDIT){
+                
+                    #cmd = paste0("java -DisBatchMode=true -DinputDirPath='",part.folder,"' -DoutputDirPath='",eval.folder,"' -jar lib/ClusteringEditDist.jar")
+                    cmd = paste0("java -DisBatchMode=true -DinputDirPath='' -DsolutionsFilePath='",file.path(part.folder,"allResults.txt"),"' -DoutputDirPath='",eval.folder,"' -jar lib/ClusteringEditDist.jar")
+                    print(cmd)
+                    system(command = cmd)
+                
+                } else {
+
+				    # ===========================================================================
+				    # This is the fast way to compute the normalization of VI and EDIT distances.
+				    # We do not want to spend much time to compute their normalizations, if the raw distance are already computed
+				    done = FALSE
+				    if(measure == EDIT.NORM){
+					    edit.mtrx.file = file.path(eval.folder, paste0(EVAL.DIST.MATRIX.FILE.PREFIX,"-",EDIT,".csv"))
+					    if(file.exists(edit.mtrx.file)){
+						    edit.dist.mtrx = as.matrix(read.csv(edit.mtrx.file, row.names = 1, header= TRUE, check.names=FALSE))
+						    dist.mtrx = matrix(as.numeric(edit.dist.mtrx),nrow=nrow(edit.dist.mtrx), ncol=ncol(edit.dist.mtrx))/n
+						    done = TRUE
+					    }
+				    }
+				    # else if(measure == NVI){ # OLD CODE => WE NORMALIZE VI BY JOINT ENTROPY
+				    #                           NORMALIZATION WITH LOG(N) DOES NOT ALLOW TO COMPARE DATASETS OF DIFFERENT SIZES
+				    # 	vi.mtrx.file = file.path(eval.folder, paste0(EVAL.DIST.MATRIX.FILE.PREFIX,"-",VI,".csv"))
+				    # 	if(file.exists(vi.mtrx.file)){
+				    # 	    vi.dist.mtrx = as.matrix(read.csv(vi.mtrx.file, row.names = 1, header= TRUE, check.names=FALSE))
+				    # 		dist.mtrx = matrix(as.numeric(vi.dist.mtrx),nrow=nrow(vi.dist.mtrx), ncol=ncol(vi.dist.mtrx))/log(n)
+				    # 		done = TRUE
+				    # 	}
+				    # }
+				    # ===========================================================================
+				    
+				    if(!done){
+					    par.mode = TRUE
+					    nb.core = PAR.MODE.NB.CORE.DEFAULT
+					    chunk.size = PAR.MODE.CHUNK.SIZE.DEFAULT
+					    if(m < PAR.MODE.THRESH.NB.MEM.FILE){ # if there is just a small amount of files, do it sequantially
+						    par.mode = FALSE
+						    nb.core = NA
+						    chunk.size = NA
+					    }
+					    dist.mtrx = create.distance.matrix(measure, part.folder1=part.folder, nb.part1=m, algo.name1=algo.name, 
+							    is.mtrx.symmetric, parallel.mode=par.mode, nb.core=nb.core, chunk.size=chunk.size)
+				    }
+				    
+				    write.csv(x=dist.mtrx, file=mtrx.file)
+
+                }
+
+			} else { 
+				tlog(16, "distance matrix file already exists")
 			}
 			
 			
@@ -252,6 +347,14 @@ process.algo.evaluation = function(eval.folder, part.folder, algo.name, net.fold
 			}
 		}
 		# ---------------------------------------------------------------------
+
+
+        # -------------------------
+	    # TODO workaround, otherwise it takes too much time
+        m = m.org
+        # -------------------------
+
+#}
 
 	}
 }
@@ -327,11 +430,12 @@ evaluate.partitions = function(graph.sizes, d, l0, prop.mispls, prop.negs, in.ra
 		for(prop.mispl in prop.mispls){
 			tlog(8, "evaluating partitions => prop.mispl: ", prop.mispl)
 			
-		    if(is.na(prop.negs) && d == 1){
-		        prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
-		    }		
-			
-			for(prop.neg in prop.negs){
+            my.prop.negs = prop.negs # if we do not do that, for each n value, prop negs will not be the initial value(s)
+            if(is.na(my.prop.negs) && d == 1){
+                my.prop.negs = compute.prop.neg(n, d, l0, prop.mispl)
+            }
+            
+            for (prop.neg in my.prop.negs) {
 				tlog(12, "evaluating partitions => prop.neg: ", prop.neg)
 				
 								
