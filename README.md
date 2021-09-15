@@ -63,8 +63,8 @@ Here are the folders composing the project:
      * `sudo ./cplex_studio<YOUR_VERSION>.linux-x86-64.bin` 
        * The default installation location for education version is: `/opt/ibm/ILOG/CPLEX_Studio<YOUR_VERSION`.
        * The default installation location for trial version is: `/opt/ibm/ILOG/CPLEX_Studio_Community<YOUR_VERSION/cplex/bin/x86-64_linux/`.
-4. Download the project of `ExCC` on [github](https://github.com/arinik9/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `sol0.txt` created in the output folder), move the executable file `ExCC.jar`, which is in `exe`, into the `lib/ExCC` folder in this project.
-5. Download the project of `ClusteringEditDistance` on [github](https://github.com/arinik9/ClusteringEditDistance). Move the executable file `ClusteringEditDist.jar` into the lib `folder ` in this project. This jar file allows to compute the edit distance between membership vectors.
+4. Download the project of `ExCC` on [github](https://github.com/CompNet/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `sol0.txt` created in the output folder), move the executable file `ExCC.jar`, which is in `exe`, into the `lib/ExCC` folder in this project.
+5. Download the project of `EnumCC` on [github](https://github.com/CompNet/EnumCC). Move the executable files `ClusteringEditDist.jar` into the lib `folder ` in this project. This jar file allows to compute the edit distance between membership vectors.
 6. Download the signed networks on [`figshare`](https://doi.org/10.6084/m9.figshare.8233340) or generate your own signed networks based on our [signed graph generator](https://github.com/CompNet/SignedBenchmark).
 
 
