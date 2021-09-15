@@ -39,10 +39,6 @@ Here are the folders composing the project:
 
 
 # Installation
-TODO: add ClusteringEditDist from https://github.com/arinik9/ClusteringEditDist
-
-
-
 1. Install the [`R` language](https://www.r-project.org/)
 2. Install the following R packages:
    * [`igraph`](http://igraph.org/r/) Tested with the version 1.2.6.
@@ -67,8 +63,9 @@ TODO: add ClusteringEditDist from https://github.com/arinik9/ClusteringEditDist
      * `sudo ./cplex_studio<YOUR_VERSION>.linux-x86-64.bin` 
        * The default installation location for education version is: `/opt/ibm/ILOG/CPLEX_Studio<YOUR_VERSION`.
        * The default installation location for trial version is: `/opt/ibm/ILOG/CPLEX_Studio_Community<YOUR_VERSION/cplex/bin/x86-64_linux/`.
-4. Download the project of `ExCC` from [github](https://github.com/arinik9/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `ExCC-result.txt` created in the output folder), move the exectuable file `cplex-partition.jar`, which is in `exe`, into the folder `lib/ExCC` in this project.
-5. Download the signed networks on [`figshare`](https://doi.org/10.6084/m9.figshare.8233340) or generate your own signed networks bases on our [signed graph generator](https://github.com/CompNet/SignedBenchmark).
+4. Download the project of `ExCC` on [github](https://github.com/arinik9/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `sol0.txt` created in the output folder), move the executable file `ExCC.jar`, which is in `exe`, into the `lib/ExCC` folder in this project.
+5. Download the project of `ClusteringEditDistance` on [github](https://github.com/arinik9/ClusteringEditDistance). Move the executable file `ClusteringEditDist.jar` into the lib `folder ` in this project. This jar file allows to compute the edit distance between membership vectors.
+6. Download the signed networks on [`figshare`](https://doi.org/10.6084/m9.figshare.8233340) or generate your own signed networks based on our [signed graph generator](https://github.com/CompNet/SignedBenchmark).
 
 
 # Use
