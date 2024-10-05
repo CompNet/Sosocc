@@ -1,35 +1,50 @@
-# Sosocc
-Space of Optimal Solutions of the Correlation Clustering Problem
+Sosocc
+===================
+*Space of Optimal Solutions of the Correlation Clustering Problem*
 
 * Copyright 2020-21 Nejat Arınık
 
 Sosocc is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see the file `LICENCE`
 
-* Lab site: http://lia.univ-avignon.fr/
-* GitHub repo: https://github.com/CompNet/Sosocc
-* Contact: Nejat Arınık <arinik9@gmail.com>, Vincent Labatut <vincent.labatut@univ-avignon.fr>
-
+* **Lab site:** http://lia.univ-avignon.fr/
+* **GitHub repo:** https://github.com/CompNet/Sosocc
+* **Contact:** Nejat Arınık <arinik9@gmail.com>, Vincent Labatut <vincent.labatut@univ-avignon.fr>
 
 -----------------------------------------------------------------------
 
-# Description
+## Description
 This set of `R` scripts was designed to analyze the space of Optimal Solutions of the *Correlation Clustering Problem*. When solving an instance of such problem, several or even many optimal solutions (i.e. partitions) may coexist. If multiple optimal partitions coexist, one can then wonder how different/diverse they are. Put differently, we want to know what we loose when considering only one solution, while there might be multiple ones. In order to answer these questions, one should ideally enumerate completely the space of optimal solutions, and perform its analysis. To this end, we propose a new efficient solution space enumeration method and a cluster analysis-based framework in order to first enumerate the space of optimal partitions and then empirically study such space.
 
 In this repository, we are able to run three exact partitioning methods for the CC problem:
-* *ExCC*: It is a method aiming to obtain a single optimal solution. Its source code is found [here](https://github.com/CompNet/ExCC). It first employs a root relaxation phase, where we add violated valid inequalities through Cutting Plane method, then it proceeds to the branching phase. Use `get.ExCC.code(enum.all=FALSE)` in the code.
-* *OneTreeCC* (also called *ExCC-all*): It is a solution space enumeration method incorprated in the commercial solver CPLEX.  Its source code is found [here](https://github.com/CompNet/ExCC). This two-step method first build and explore the search tree, i.e. B&B tree, in order to find efficiently the first optimal solution, then enumerate all the other optimal solutions based on the same tree. Use `get.ExCC.code(enum.all=TRUE)` in the code.
-* *EnumCC*: It is a solution space enumeration method that we propose in *[Arınık'21]*. Its source code is found [here](https://github.com/CompNet/EnumCC). It takes in input a distance parameter `r_{max}` to explore the neighborhoof of an optimal solution. In our experiments, we have shown that it is more convenient to set `r_{max}=3` in general. Use `get.EnumCC.code(maxNbEdit=3)` in the code. Note that you need to run `ExCC` before calling `EnumCC`, since the latter needs an already-found optimal solution.
+* *ExCC*: It is a method aiming to obtain a single optimal solution. Its source code is found on the [ExCC](https://github.com/CompNet/ExCC) repository. It first employs a root relaxation phase, where we add violated valid inequalities through Cutting Plane method, then it proceeds to the branching phase. Use `get.ExCC.code(enum.all=FALSE)` in the code.
+* *OneTreeCC* (also called *ExCC-all*): It is a solution space enumeration method incorprated in the commercial solver CPLEX.  Its source code is found on the [ExCC](https://github.com/CompNet/ExCC) repository. This two-step method first build and explore the search tree, i.e. B&B tree, in order to find efficiently the first optimal solution, then enumerate all the other optimal solutions based on the same tree. Use `get.ExCC.code(enum.all=TRUE)` in the code.
+* *EnumCC*: It is a solution space enumeration method that we propose in [[Arınık'23](#references)]. Its source code is found on the [EnumCC](https://github.com/CompNet/EnumCC) repository. It takes in input a distance parameter `r_{max}` to explore the neighborhoof of an optimal solution. In our experiments, we have shown that it is more convenient to set `r_{max}=3` in general. Use `get.EnumCC.code(maxNbEdit=3)` in the code. Note that you need to run `ExCC` before calling `EnumCC`, since the latter needs an already-found optimal solution.
+
+If you use this software or the assocated data, please cite reference [[Arınık'20](#references)]:
+
+```bibtex
+@Article{Arinik2020,
+  author    = {Arınık, Nejat and Figueiredo, Rosa and Labatut, Vincent},
+  title     = {Multiplicity and Diversity: Analyzing the Optimal Solution Space of the Correlation Clustering Problem on Complete Signed Graphs},
+  journal   = {Journal of Complex Networks},
+  year      = {2020},
+  volume    = {8},
+  number    = {6},
+  pages     = {cnaa025},
+  doi       = {10.1093/comnet/cnaa025},
+}
+```
 
 
-# Data
-Our tool is applied to a set of signed networks generated thanks to our [signed graph generator](https://github.com/CompNet/SignedBenchmark). The details about the generator are explained [here](https://www.overleaf.com/read/pdggvqbsmrch). You may consider downloading our generated signed graphs associated with our article *[Arınık'20]*, which are in the folder `Input Signed Networks.tar.gz` on [FigShare](https://doi.org/10.6084/m9.figshare.8233340). The advantage of dowloading our data is that we also provide you with the optimal solutions for each signed network (in the folder `All Partitions Results.tar.gz` on [FigShare](https://doi.org/10.6084/m9.figshare.8233340). 
+## Data
+Our tool is applied to a set of signed networks generated thanks to our signed graph generator, available on the [SignedBenchmark](https://github.com/CompNet/SignedBenchmark) repository. The details about the generator are explained [here](https://www.overleaf.com/read/pdggvqbsmrch). You may consider downloading our generated signed graphs associated with our article [[Arınık'20](#references)], which are in the folder `Input Signed Networks.tar.gz` on [Zenodo](https://doi.org/10.5281/zenodo.6816103). The advantage of dowloading our data is that we also provide you with the optimal solutions for each signed network (in the folder `All Partitions Results.tar.gz` on [Zenodo](https://doi.org/10.5281/zenodo.6816103).
 
-Moreover, You may also consider downloading our second set of generated signed graphs (both complete and incomplete signed graphs) associated with our submitted article *[Arınık'21]* on [FigShare](https://doi.org/10.6084/m9.figshare.15043911).
+Moreover, You may also consider downloading our second set of generated signed graphs (both complete and incomplete signed graphs) associated with our article [[Arınık'23](#references)] on another [Zenodo](https://doi.org/10.5281/zenodo.13894064) repository.
 
 To show explicitly the folder structure used in the signed graph generation and for a quick test, we have already put some generated networks in `in/random-networks` and *some* corresponding optimal partitions in `out/partitions`. 
 
 
-# Organization
+## Organization
 Here are the folders composing the project:
 * Folder `src`: contains the source code (R scripts).
 * Folder `in`: contains the generated signed networks. 
@@ -38,7 +53,7 @@ Here are the folders composing the project:
 * Folder `out`: contains the folders and files produced by our scripts. See the *Use* section for more details.
 
 
-# Installation
+## Installation
 1. Install the [`R` language](https://www.r-project.org/)
 2. Install the following R packages:
    * [`igraph`](http://igraph.org/r/) Tested with the version 1.2.6.
@@ -63,12 +78,12 @@ Here are the folders composing the project:
      * `sudo ./cplex_studio<YOUR_VERSION>.linux-x86-64.bin` 
        * The default installation location for education version is: `/opt/ibm/ILOG/CPLEX_Studio<YOUR_VERSION`.
        * The default installation location for trial version is: `/opt/ibm/ILOG/CPLEX_Studio_Community<YOUR_VERSION/cplex/bin/x86-64_linux/`.
-4. Download the project of `ExCC` on [github](https://github.com/CompNet/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `sol0.txt` created in the output folder), move the executable file `ExCC.jar`, which is in `exe`, into the `lib/ExCC` folder in this project.
-5. Download the project of `EnumCC` on [github](https://github.com/CompNet/EnumCC). Move the executable files `ClusteringEditDist.jar` into the lib `folder ` in this project. This jar file allows to compute the edit distance between membership vectors.
-6. Download the signed networks on [`figshare`](https://doi.org/10.6084/m9.figshare.8233340) or generate your own signed networks based on our [signed graph generator](https://github.com/CompNet/SignedBenchmark).
+4. Download the project of `ExCC` on [GitHub](https://github.com/CompNet/ExCC). First, configure and then compile it. To test it, you can run the file `run.sh`.If everything works (i.e. if a file `sol0.txt` created in the output folder), move the executable file `ExCC.jar`, which is in `exe`, into the `lib/ExCC` folder in this project.
+5. Download the project of `EnumCC` on [GitHub](https://github.com/CompNet/EnumCC). Move the executable files `ClusteringEditDist.jar` into the lib `folder ` in this project. This jar file allows to compute the edit distance between membership vectors.
+6. Download the signed networks on [Zenodo](https://doi.org/10.5281/zenodo.6816103) or generate your own signed networks based on our [SignedBenchmark](https://github.com/CompNet/SignedBenchmark).
 
 
-# Use
+## Use
 1. Set correctly the variables `CPLEX.BIN.PATH`.
 2. Open the `R` console.
 3. Set the current directory as the working directory, using `setwd("<my directory>")`.
@@ -122,6 +137,6 @@ The script will produce the following subfolders in the folder `out`:
 * `output-csv-data`: Some results are recorded in csv format (e.g. number of optimal solutions per network).
 
 
-# References
-* **[Arınık'20]** N. Arınık & R. Figueiredo & V. Labatut. *Multiplicity and Diversity: Analyzing the Optimal Solution Space of the Correlation Clustering Problem*, Journal of Complex Networks, 8(6) 2020. [doi: https://doi.org/10.1093/comnet/cnaa025](https://github.com/CompNet/Sosocc)
-* **[Arınık'21]** N. Arınık & R. Figueiredo & V. Labatut. *Efficient Enumeration of Correlation Clustering Optimal Solution Space (submitted)*, Journal of Global Optmization, 2021.
+## References
+* **[Arınık'20]** N. Arınık & R. Figueiredo & V. Labatut. *Multiplicity and Diversity: Analyzing the Optimal Solution Space of the Correlation Clustering Problem*, Journal of Complex Networks, 8(6):cnaa025, 2020. DOI: [https://doi.org/10.1093/comnet/cnaa025](https://github.com/CompNet/Sosocc) [⟨hal-02994011⟩](https://hal.archives-ouvertes.fr/hal-02994011)
+* **[Arınık'23]** N. Arınık & R. Figueiredo & V. Labatut. *Efficient Enumeration of the Optimal Solutions to the Correlation Clustering problem*, Journal of Global Optmization 86:355-391, 2023. DOI: [10.1007/s10898-023-01270-3](http://doi.org/10.1007/s10898-023-01270-3) [⟨hal-03935831⟩](https://hal.archives-ouvertes.fr/hal-03935831)
